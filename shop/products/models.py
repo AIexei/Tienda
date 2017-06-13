@@ -1,13 +1,16 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from datetime import datetime
+from re import sub
+from shop.settings import MEDIA_ROOT
 import os
 
 
 # Create your models here.
 
 def get_upload_path(instance, filename):
-    return os.path.join(datetime.now().date().strftime('%Y/%m/%d'), filename)
+    file_type = filename.split('.')[-1]
+    return os.path.join(datetime.now().date().strftime('%Y/%m/%d'), '{}.{}'.format(sub(r'\s|\.', '', instance.stock_id), file_type))
 
 
 class Manufacturer(models.Model):
@@ -59,7 +62,6 @@ class Product(models.Model):
     has_wifi = models.BooleanField(default=False)
     os_type = models.CharField(max_length=50, choices=OS_CHOICES)
 
-
     def __str__(self):
         return self.name
 
@@ -91,11 +93,21 @@ class SKU(models.Model):
     color = models.CharField(max_length=50, choices=COLOR_CHOICES)
     diagonal = models.FloatField()
     material = models.CharField(max_length=50, choices=MATERIAL_CHOICES)
+    stock_id = models.CharField(max_length=50, unique=True, blank=True)
     product = models.ForeignKey(Product, related_name='SKUs')
     image = models.ImageField(upload_to=get_upload_path)
 
+    def save(self, *args, **kwargs):
+        self.stock_id = '{}  {}{}{}'.format(self.product.name, self.color, self.material, str(self.diagonal))
+        super(SKU, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        print('x')
+        self.image.delete()
+        super(SKU, self).delete(*args, **kwargs)
+
     def __str__(self):
-        return '{}  {}{}{}'.format(self.product.name, self.color, self.material, str(self.diagonal))
+        return self.stock_id
 
 
 from loginsys.models import UserProfile
@@ -108,7 +120,7 @@ class Comment(models.Model):
     owner = models.ForeignKey(UserProfile, related_name='comments')
     date = models.DateField(auto_now_add=True)
     content = models.TextField()
-    product = models.ForeignKey(Product, related_name='comments')
+    sku = models.ForeignKey(SKU, related_name='comments')
 
     def __str__(self):
         return self.content
