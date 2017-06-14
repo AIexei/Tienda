@@ -4,8 +4,17 @@ from django.shortcuts import render, HttpResponse
 
 
 def index(request):
-    return HttpResponse('index')
+    context = {}
+
+
+
+    return render(request, 'index.html', context)
 
 
 def product(request, product_id):
     return HttpResponse('product' + product_id)
+
+
+# login required
+def favourites(request):
+    return HttpResponse('favourites')

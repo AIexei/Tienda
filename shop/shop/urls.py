@@ -24,7 +24,7 @@ import products.urls
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include(loginsys.urls)),
-    url(r'^/', include(products.urls)),
+    url(r'^', include(products.urls)),
 ]
 
 if settings.DEBUG:

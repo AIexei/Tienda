@@ -57,7 +57,10 @@ ROOT_URLCONF = 'shop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'templates/products'),
+                 os.path.join(BASE_DIR, 'templates/loginsys')],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,4 +131,10 @@ USE_TZ = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
 STATIC_URL = '/static/'
+STATIC_PATH = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = (
+    STATIC_PATH,
+)

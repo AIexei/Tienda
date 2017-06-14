@@ -71,7 +71,7 @@ class SKU(models.Model):
         verbose_name_plural = 'SKUs'
 
     COLOR_CHOICES = (
-        ('bc', 'black'),
+        ('bk', 'black'),
         ('bn', 'brown'),
         ('be', 'blue'),
         ('yw', 'yellow'),
@@ -102,7 +102,6 @@ class SKU(models.Model):
         super(SKU, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        print('x')
         self.image.delete()
         super(SKU, self).delete(*args, **kwargs)
 

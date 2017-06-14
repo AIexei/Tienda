@@ -13,6 +13,7 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'manufacturer', 'get_categories')
+    ordering = ('name',)
     filter_horizontal = ('categories',)
     search_fields = ('name',)
 
@@ -28,12 +29,9 @@ class CommentAdmin(admin.ModelAdmin):
 
 class SKUAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'color', 'material', 'diagonal',)
+    ordering = ('stock_id',)
+    exclude = ('stock_id',)
     actions = ['delete_selected',]
-
-    def get_form(self, request, obj=None, **kwargs):
-        self.exclude = []
-        self.exclude.append('stock_id')
-        return super(SKUAdmin, self).get_form(request, obj, **kwargs)
 
     def delete_selected(self, request, queryset):
         for obj in queryset:
