@@ -39,7 +39,9 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 class SKUAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'color', 'material', 'diagonal',)
+    list_display = ('__str__', 'color', 'body_material', 'screen_diagonal',
+                    'screen_resolution', 'get_ppi', 'weight', 'battery_capacity',)
+
     ordering = ('stock_id',)
     exclude = ('stock_id',)
     actions = ['delete_selected',]
