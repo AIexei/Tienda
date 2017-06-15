@@ -20,6 +20,17 @@ class ProductAdmin(admin.ModelAdmin):
     def get_categories(self, obj):
         return ' ,'.join(cat.name for cat in obj.categories.all())
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "categories":
+            no_children_objects_ids = []
+
+            for i in Category.objects.all():
+                if not i.get_descendant_count():
+                    no_children_objects_ids.append(i.id)
+
+            kwargs["queryset"] = Category.objects.filter(id__in=no_children_objects_ids)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
     get_categories.short_description = 'Categories'
 
 

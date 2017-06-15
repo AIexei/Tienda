@@ -158,15 +158,7 @@
 
 div#image {
 	margin-top: 20px;
-}
-
-
-b#owner {
-	padding-left: 15px;
-}
-
-b#phone {
-	padding-left: 15px;
+	padding: 0;
 }
 
 div#info {
@@ -184,6 +176,10 @@ div#search-main {
 
 div#product-buttons {
 	margin-top: 22px;
+}
+
+img#product-image {
+    border: 0;
 }
 
 /* xs */

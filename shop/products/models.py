@@ -1,8 +1,9 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import m2m_changed
 from mptt.models import MPTTModel, TreeForeignKey
 from datetime import datetime
 from re import sub
-from shop.settings import MEDIA_ROOT
 import os
 
 
@@ -64,6 +65,17 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+@receiver(m2m_changed, sender=Product.categories.through)
+def update_categories(sender, instance, **kwargs):
+    action = kwargs.pop('action', None)
+
+    if action == 'post_add' or action == 'post_remove':
+        for category in instance.categories.all():
+            for ancestor in category.get_ancestors():
+                if ancestor not in instance.categories.all():
+                    instance.categories.add(ancestor)
 
 
 class SKU(models.Model):
