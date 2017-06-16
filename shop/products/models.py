@@ -101,9 +101,23 @@ class Product(models.Model):
     +14. battery type
     +15. battery capacity
     +16. connectors
-    +17. bluetooth
-    +18. wifi
+    +17. wifi
+    +18. bluetooth
     '''
+
+
+    '''def get_categories_sep_by_level(self):
+        lists_dict = {}
+
+        for category in self.categories.all():
+            if category.level in lists_dict.keys():
+                lists_dict[category.level].append(category)
+            else:
+                lists_dict[category.level] = [category]
+
+        return lists_dict
+    '''
+
 
     def __str__(self):
         return self.name
@@ -148,7 +162,7 @@ class SKU(models.Model):
 
     color = models.CharField(max_length=50, choices=COLOR_CHOICES)
     screen_diagonal = models.FloatField()
-    screen_resolution = models.CharField(max_length=50)
+    screen_resolution = models.CharField(max_length=50, null=True, blank=True)
     body_material = models.CharField(max_length=50, choices=MATERIAL_CHOICES)
     weight = models.IntegerField(help_text='In grams')
     battery_capacity = models.IntegerField(default=None, null=True, blank=True, help_text='In Milliamp * hour')
@@ -159,7 +173,7 @@ class SKU(models.Model):
 
 
     def get_ppi(self):
-        if self.screen_resolution is not None:
+        if self.screen_resolution:
             w, h = map(int, self.screen_resolution.split('x'))
             diagonal_in_px = (w**2 + h**2)**0.5
             return int(diagonal_in_px / self.screen_diagonal)

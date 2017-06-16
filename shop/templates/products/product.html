@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Product{% endblock %}
+{% block title %}{{ product.manufacturer }} {{ product.name }}{% endblock %}
 
 {% block body %}
 
@@ -17,7 +17,7 @@
 				<div class="caption-full">
 						<div class="row">
 	                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-	                        	<h3 id="product-name" class="font-big"><b>{{ product.name }}</b></h3>
+	                        	<h3 id="product-name" class="font-big"><b>{{ product.manufacturer }} {{ product.name }}</b></h3>
 	                        </div>
 
 	                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
@@ -26,16 +26,20 @@
                         </div>
 
                         <center>
-	                        <div id="product-categories-div" class="">
-		                        	<a href="#"><button type="button" class="btn btn-info product-categories font-small">Category 1</button></a>
-		                        	<a href="#"><button type="button" class="btn btn-success product-categories font-small">Category 2</button></a>
-		                        	<a href="#"><button type="button" class="btn btn-warning product-categories font-small">Category 3</button></a>
-		                        	<a href="#"><button type="button" class="btn btn-danger product-categories font-small">Category 4</button></a>
-		                        	<a href="#"><button type="button" class="btn btn-success product-categories font-small">Category 5</button></a>
+	                        <div id="product-categories-div">
+								{% for category in product.categories.all %}
+									{% if category.level == 0 %}
+										<a href="#"><button type="button" class="btn btn-success product-categories font-small">{{ category.name }}</button></a>
+									{% elif category.level == 1 %}
+										<a href="#"><button type="button" class="btn btn-info product-categories font-small">{{ category.name }}</button></a>
+									{% elif category.level == 2 %}
+										<a href="#"><button type="button" class="btn btn-warning product-categories font-small">{{ category.name }}</button></a>
+									{% else %}
+										<a href="#"><button type="button" class="btn btn-default product-categories font-small">{{ category.name }}</button></a>
+									{% endif %}
+								{% endfor %}
 	                        </div>
                         </center>
-
-
 
                         <p class="font-small">{{ product.description }}</p>
                 </div>
@@ -46,7 +50,7 @@
 				<hr class="product-hr">
 
 				<div class="row text-left">
-					<div id="info" class="col-xs-12 col-sm-8 col-md-8 col-lg-8 font-mid">
+					<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 font-mid">
 						<p class="no-margin font-mid"><b id="owner">Manufacturer: </b>{{ product.manufacturer.name }}</p>
 						<p class="no-margin font-mid"><b id="phone">In store: </b>120</p>
 					</div>
@@ -66,48 +70,160 @@
 				<hr class="product-hr">
 
 				<table class="font-small table table-bordered">
-				  <tbody>
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Color</th>
-				      <td>{{ sku.color }}</td>
-				    </tr>
+				  	<tbody>
+				    	<tr>
+				      		<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Color</th>
+				      		<td>{{ sku.get_color_display }}</td>
+				    	</tr>
 
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Material</th>
-				      <td>{{ sku.material }}</td>
-				    </tr>
 
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Diagonal</th>
-				      <td>{{ sku.diagonal }}</td>
-				    </tr>
+				    	<tr>
+				      		<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Body material</th>
+				      		<td>{{ sku.get_body_material_display }}</td>
+						</tr>
 
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Creation year</th>
-				      <td>{{ product.creation_year }}</td>
-				    </tr>
 
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Operational system</th>
-				      <td>{{ product.get_os_type_display }}</td>
-				    </tr>
+						{% if product.os_type %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Operational system</th>
+						  	<td>{{ product.get_os_type_display }}</td>
+						</tr>
+						{% endif %}
 
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Wifi</th>
-				      <td>{{ product.has_wifi }}</td>
-				    </tr>
 
-				    <tr>
-				      <th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Bluetooth</th>
-				      <td>{{ product.has_bluetooth }}</td>
-				    </tr>
-				  </tbody>
+						{% if product.creation_year %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Creation year</th>
+						  	<td>{{ product.creation_year }}</td>
+						</tr>
+						{% endif %}
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Weight</th>
+						  	<td>{{ sku.weight }} grams</td>
+						</tr>
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Screen diagonal</th>
+						  	<td>{{ sku.screen_diagonal }}"</td>
+						</tr>
+
+
+						{% if sku.screen_resolution %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Screen resolution</th>
+						  	<td>{{ sku.screen_resolution }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if sku.get_ppi %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Pixels per inch</th>
+						  	<td>{{ sku.get_ppi }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.camera %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Camera</th>
+						  	<td>{{ product.camera }} megapixels</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.processor %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Processor</th>
+						  	<td>{{ product.processor }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.cores_count %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Cores count</th>
+						  	<td>{{ product.cores_count }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.ram %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">RAM</th>
+						  	<td>{{ product.ram }} gigabytes</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.builtin_memory %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Built-in memory</th>
+						  	<td>{{ product.builtin_memory }} gigabytes</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.battery_type %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Battery type</th>
+						  	<td>{{ product.get_battery_type_display }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if sku.battery_capacity %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Battery capacity</th>
+						  	<td>{{ sku.battery_capacity }} milliamp * hour</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.connectors %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Connectors</th>
+						  	<td>{{ product.connectors }}</td>
+						</tr>
+						{% endif %}
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Wifi</th>
+
+							<!-- glyphicon -->
+
+							{% if product.wifi %}
+						  		<td>Yes</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Bluetooth</th>
+
+							<!-- glyphicon -->
+
+							{% if product.bluetooth %}
+						  		<td>Yes</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+				  	</tbody>
 				</table>
 			</div>
 
 
 			<div id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<hr class="product-hr">
+
+				<p class="font-big "><b>Comments (0)</b></p>
 
                 {% for comment in sku.comments.all %}
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 comment">
