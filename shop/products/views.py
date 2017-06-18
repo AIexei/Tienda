@@ -21,6 +21,10 @@ def product(request, sku_id):
     return render(request, 'product.html', context)
 
 
+def search(request):
+    return render(request, 'search.html', {})
+
+
 # login required
 def favourites(request):
     return HttpResponse('favourites')
