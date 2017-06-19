@@ -4,7 +4,10 @@ from django.shortcuts import render, HttpResponse
 
 
 def user_login(request):
-    return HttpResponse('login')
+    context = dict()
+    context['can_search'] = False
+
+    return render(request, 'login.html', context)
 
 
 def user_logout(request):
@@ -12,4 +15,7 @@ def user_logout(request):
 
 
 def user_register(request):
-    return HttpResponse('register')
+    context = dict()
+    context['can_search'] = False
+
+    return render(request, 'register.html', context)
