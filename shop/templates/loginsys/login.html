@@ -11,10 +11,10 @@
 
 
 {% block navbar-lis %}
-	<li><a href="./">Home<span class="sr-only">(current)</span></a></li>
-	<li class="active"><a href="#">Login</a></li>
-	<li id="last-li"><a href="#">Register</a></li>
-{% endblock%}
+	<li><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+	<li class="active"><a href="{% url 'login' %}">Login</a></li>
+	<li id="last-li"><a href="{% url 'register' %}">Register</a></li>
+{% endblock %}
 
 
 {% block body %}

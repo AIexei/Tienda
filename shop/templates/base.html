@@ -27,7 +27,7 @@
 					<span class="icon-bar"></span>
 					</button>
 
-					<a class="navbar-brand" id="mybrand" href="#">Tienda</a>
+					<a class="navbar-brand" id="mybrand" href="{% url 'index' %}">Tienda</a>
 
 					{% if can_search %}
 						<form class="navbar-form navbar-left hidden-xs">
@@ -62,5 +62,7 @@
 
 		<script src="{% static 'bootstrap/js/jquery-latest.js' %}"></script>
 		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+		{% block scripts %}{% endblock %}
 	</body>
 </html>

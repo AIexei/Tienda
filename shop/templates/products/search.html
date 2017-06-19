@@ -1,267 +1,132 @@
-<!DOCTYPE html>
-
+{% extends 'base.html' %}
 {% load staticfiles %}
 
-<html>
-	<head>
-		<title>Search</title>
-		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-select.min.css' %}">
-		<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-		<link href="{% static 'bootstrap/css/style.css' %}" rel="stylesheet">
-		<meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	    <meta http-equiv="x-ua-compatible" content="ie=edge">	
-	</head>
 
-	<body class="body">
-		<nav class="navbar navbar-default navbar-fixed-top">
-	      	<div class="container-fluid">
-		        <div class="navbar-header">
-		          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-		            <span class="sr-only">Toggle navigation</span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		          </button>
-
-		          <a class="navbar-brand" id="mybrand" href="#">Tienda</a>
-
-		          <form class="navbar-form navbar-left hidden-xs">
-				      <div class="input-group">
-				        <input type="text" class="form-control" placeholder="Search by products">
-				        <div class="input-group-btn">
-				          <button class="btn btn-default" type="submit">
-				            <i class="glyphicon glyphicon-search"></i>
-				          </button>
-				        </div>
-				      </div>
-				   </form>
-
-		        </div>
-
-		        <div id="navbar" class="navbar-collapse collapse">
-		            <ul class="nav navbar-nav navbar-right">
-		            	<li class="active"><a href="./">Home<span class="sr-only">(current)</span></a></li>
-		            	<li><a id="liked" href="#">Liked</a></li>
-		            	<li><a href="#">Login</a></li>
-		            	<li id="last-li"><a href="#">Register</a></li>
-		          	</ul>
-		        </div><!--/.nav-collapse -->
-	      	</div>
-	    </nav>
+{% block title %}Search{% endblock %}
 
 
-		<div id="index-main" class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+{% block links %}
+	<link href="{% static 'bootstrap/css/bootstrap-select.min.css' %}" rel="stylesheet">
+{% endblock %}
 
-			<div class="hidden-xs col-sm-5 col-md-4 col-lg-3">
-				<h3 class="text-center caption font-big">Params</h3>
 
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<p class="text-center font-mid"><i>Category</i></p>
+{% block navbar-lis %}
+	{% if user.is_authenticated %}
+		<li class="active"><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+		<li><a href="{% url 'favourites' %}">Liked</a></li>
+		<li id="last-li"><a href="{% url 'logout' %}">Logout</a></li>
+	{% else %}
+		<li class="active"><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+		<li><a href="{% url 'login' %}">Login</a></li>
+		<li id="last-li"><a href="{% url 'register' %}">Register</a></li>
+	{% endif %}
+{% endblock %}
 
-						<center>
-							<select class="selectpicker" data-size=5 data-live-search="true">
-								<option class="text-center">All categories</option>
-						        <option class="text-center" data-subtext="Phones">Smartphone</option>
-						        <option class="text-center">Ketchup</option>
-						        <option class="text-center">Relish</option>
-						        <option class="text-center">Ketchup</option>
-						        <option class="text-center">Relish</option>
-						        <option class="text-center">Ketchup</option>
-						        <option class="text-center">Relish</option>
-						        <option class="text-center">Ketchup</option>
-						        <option class="text-center">Relish</option>
-						    </select>
-					    </center>
-					</div>
 
-					<div class="search-param col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<p class="text-center font-mid"><i>Color</i></p>
+{% block body %}
 
-						<center>
-							<select class="selectpicker show-tick" data-size=5 multiple title="Any color" data-live-search="true">
-								<option class="text-center">Any color</option>
-						        <option class="text-center">Red</option>
-						        <option class="text-center">Gray</option>
-						        <option class="text-center">Blue</option>
-						        <option class="text-center">Red</option>
-						        <option class="text-center">Gray</option>
-						        <option class="text-center">Blue</option>
-						        <option class="text-center">Red</option>
-						        <option class="text-center">Gray</option>
-						        <option class="text-center">Blue</option>
-						    </select>
-					    </center>
-					</div>
+	<div id="index-main" class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
 
-					<div class="search-param col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<p class="text-center font-mid"><i>Manufacturer</i></p>
+		<div class="hidden-xs col-sm-5 col-md-4 col-lg-3">
+			<h3 class="text-center caption font-big">Params</h3>
 
-						<center>
-							<select class="selectpicker show-tick" data-size=5 multiple title="Any manufacturer" data-live-search="true">
-								<option class="text-center">Any manufacturer</option>
-						        <option class="text-center">Samsung</option>
-						        <option class="text-center">Apple</option>
-						        <option class="text-center">Nokia</option>
-						        <option class="text-center">Samsung</option>
-						        <option class="text-center">Apple</option>
-						        <option class="text-center">Nokia</option>
-						        <option class="text-center">Samsung</option>
-						        <option class="text-center">Apple</option>
-						        <option class="text-center">Nokia</option>
-						    </select>
-					    </center>
-					</div>
+			<div class="row">
+				<div>
+					<p class="text-center font-mid"><i>Category</i></p>
 
-					<div class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 checkbox font-mid">
-					  <label><input type="checkbox" value=""><i>Wifi</i></label>
-					</div>
+					<center>
+						<select class="selectpicker" data-size=5 data-live-search="true">
+							{% for category in categories %}
+								{% if category.parent is not None %}
+									<option class="text-center" data-subtext="{{ category.parent }}">{{ category.name }}</option>
+								{% else %}
+									<option class="text-center">{{ category.name }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</center>
+				</div>
 
-					<div class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 checkbox font-mid">
-					  <label><input type="checkbox" value=""><i>Bluetooth</i></label>
-					</div>
 
+				<div class="search-param">
+					<p class="text-center font-mid"><i>Color</i></p>
+
+					<center>
+						<select class="selectpicker show-tick" data-size=5 multiple title="Any color" data-live-search="true">
+							{% for color in colors %}
+								<option class="text-center">{{ color }}</option>
+							{% endfor %}
+						</select>
+					</center>
+				</div>
+
+
+				<div class="search-param">
+					<p class="text-center font-mid"><i>Manufacturer</i></p>
+
+					<center>
+						<select class="selectpicker show-tick" data-size=5 multiple title="Any manufacturer" data-live-search="true">
+							{% for manufacturer in manufacturers %}
+								<option class="text-center">{{ manufacturer.name }}</option>
+							{% endfor %}
+						</select>
+					</center>
+				</div>
+
+
+				<div class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 checkbox font-mid">
+				  <label><input type="checkbox" value=""><i>Wifi</i></label>
+				</div>
+
+
+				<div class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 checkbox font-mid">
+				  <label><input type="checkbox" value=""><i>Bluetooth</i></label>
 				</div>
 
 			</div>
 
+		</div>
 
-			<div class="col-xs-12 col-sm-7 col-md-8 col-lg9">
-				<h3 class="text-center caption font-big">Products</h3>
 
-				<div class="row">
+		<div class="col-xs-12 col-sm-7 col-md-8 col-lg9">
+			<h3 class="text-center caption font-big">Products</h3>
+
+			<div class="row">
+				{% for sku in skus %}
 					<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="images/img.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
+						<a class="no-dec" href="{% url 'product' sku.id %}">
+							<div class="thumbnail shadow">
+								<img src="{{ MEDIA_URL }}{{ sku.image }}" alt="img">
 
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="https://yt3.ggpht.com/--DvSLyJP5Hs/AAAAAAAAAAI/AAAAAAAAAAA/SAZDPLdP2Bw/s900-c-k-no/photo.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="https://ds04.infourok.ru/uploads/ex/0658/0002c577-42206c94/hello_html_m49e0ad9c.jpg	" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="images/img.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-					<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="images/img.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="images/img.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="images/img.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-                    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="#">
-	                        <div class="thumbnail shadow">
-	                            <img src="images/img.jpg" alt="img">
-	                            <div class="caption product">
-	                                <p class="text-center product-name font-mid"><b>First Product</b></p>
-	                                <hr class="product-hr">
-	                                <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-	                            </div>
-	                        </div>
-                        </a>
-                    </div>
-
-
-				</div>
+								<div class="caption product">
+									<p class="text-center product-name font-mid"><b>{{ sku.product.name }}</b></p>
+									<hr class="product-hr">
+									<h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
+								</div>
+							</div>
+						</a>
+					</div>
+				{% endfor %}
 			</div>
 		</div>
+	</div>
 
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg12 text-center navbar-fixed-bottom divfooter">
-			<footer class="footer">
-				 <span class="text-muted">Place sticky footer content here.</span>
-			</footer>
-		</div>
+{% endblock %}
 
-		<script src="{% static 'bootstrap/js/jquery-latest.js' %}"></script>
-		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-		<script src="{% static 'bootstrap/js/bootstrap-select.min.js' %}"></script>
 
-		<script type="text/javascript">
-			$(function(){
-    			$('select').on('show.bs.select', function() {
-					var parent = $(this).parent();
-					$(parent).find('div.dropdown-menu.open').first().stop(true, true).slideDown();
-				});
+{% block scripts %}
+	<script src="{% static 'bootstrap/js/bootstrap-select.min.js' %}"></script>
 
-				$('select').on('hide.bs.select', function() {
-					$('div.dropdown-menu.open').stop(true, true).slideUp();
-				 });
+	<script type="text/javascript">
+		$(function(){
+			$('select').on('show.bs.select', function() {
+				var parent = $(this).parent();
+				$(parent).find('div.dropdown-menu.open').first().stop(true, true).slideDown();
 			});
-		</script>
 
-	</body>
-</html>
+			$('select').on('hide.bs.select', function() {
+				$('div.dropdown-menu.open').stop(true, true).slideUp();
+			 });
+		});
+	</script>
+{% endblock %}
