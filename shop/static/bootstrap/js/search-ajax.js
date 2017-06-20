@@ -1,5 +1,7 @@
 $(document).ready(function() {
     $('select').on('change', function () {
+        //history.pushState('', '', '?pis=os')
+
         var category = $('select#category').val();
         var manufacturers = $('select#manufacturer').val();
         var colors = $('select#color').val();

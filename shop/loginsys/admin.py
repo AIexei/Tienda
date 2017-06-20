@@ -5,6 +5,8 @@ from .models import *
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('get_nick', 'get_name', 'get_email', 'phone')
+    filter_horizontal = ('favourites',)
+    search_fields = ('name',)
 
     def get_nick(self, obj):
         return obj.user.username

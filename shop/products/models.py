@@ -8,7 +8,6 @@ from re import sub
 import json
 import os
 
-
 # Create your models here.
 
 def get_upload_path(instance, filename):
@@ -112,7 +111,6 @@ class Product(models.Model):
     +18. bluetooth
     '''
 
-
     '''def get_categories_sep_by_level(self):
         lists_dict = {}
 
@@ -124,7 +122,6 @@ class Product(models.Model):
 
         return lists_dict
     '''
-
 
     def __str__(self):
         return self.name

@@ -13,128 +13,32 @@
 
 {% block body %}
 
-    <div id="index-main" class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+    <div id="index-main" class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
 
         <h3 class="text-center caption font-big">Liked products</h3>
 
         <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            {% if is_empty %}
+                <p class="text-center font-mid message">You do not have liked products</p>
+            {% else %}
+                {% for sku in liked_skus %}
+                    <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+                        <a class="no-dec" href="{% url 'product' sku.id %}">
+                            <div class="thumbnail shadow">
+                                <img class="img-responsive" src="{{ MEDIA_URL }}{{ sku.image }}" alt="img">
 
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
+                                <div class="caption product">
+                                    <p class="text-center product-name font-mid"><b>{{ sku.product.manufacturer.name }}</b></p>
+                                    <p class="text-center product-name font-mid"><b>{{ sku.product.name }}</b></p>
+                                    <hr class="product-hr">
+                                    <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
+                {% endfor %}
+            {% endif %}
 
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-xs-6 col-sm-6 col-md-3 col-lg-2">
-                <a class="no-dec" href="#">
-                    <div class="thumbnail shadow">
-                        <img src="images/img.jpg" alt="img">
-                        <div class="caption product">
-                            <p class="text-center product-name font-mid"><b>First Product</b></p>
-                            <hr class="product-hr">
-                            <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
 

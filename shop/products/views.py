@@ -42,22 +42,16 @@ def search(request):
     context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
     context['skus'] = SKU.objects.all()
 
-    if 'cname' in request.GET:
-        print(request.GET['cname'])
-        context['skus'] = SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())
-
-    if 'manufacturer' in request.GET:
-        print(request.GET['manufacturer'])
-
-    if 'color' in request.GET:
-        print(request.GET['color'])
-
     return render(request, 'search.html', context)
 
 
 # login required
 def favourites(request):
+    user_profile = UserProfile.objects.get(user__id=request.user.id)
+
     context = dict()
     context['can_search'] = True
+    context['liked_skus'] = user_profile.favourites.all()
+    context['is_empty'] = not bool(context['liked_skus'].count())
 
     return render(request, 'favourites.html', context)
