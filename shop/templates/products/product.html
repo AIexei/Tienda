@@ -238,9 +238,9 @@
 			<div id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<hr class="product-hr">
 
-				<p class="font-big "><b>Comments (0)</b></p>
+				<p class="font-big "><b>Comments ({{ comments.count }})</b></p>
 
-                {% for comment in sku.comments.all %}
+                {% for comment in comments %}
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 comment">
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">

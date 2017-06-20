@@ -35,7 +35,8 @@
 					<p class="text-center font-mid"><i>Category</i></p>
 
 					<center>
-						<select class="selectpicker" data-size=5 data-live-search="true">
+						<select id="category" class="selectpicker" data-size=5 title="All categories" data-live-search="true">
+
 							{% for category in categories %}
 								{% if category.parent is not None %}
 									<option class="text-center" data-subtext="{{ category.parent }}">{{ category.name }}</option>
@@ -52,7 +53,7 @@
 					<p class="text-center font-mid"><i>Color</i></p>
 
 					<center>
-						<select class="selectpicker show-tick" data-size=5 multiple title="Any color" data-live-search="true">
+						<select id="color" class="selectpicker show-tick" data-size=5 multiple title="Any color" data-live-search="true">
 							{% for color in colors %}
 								<option class="text-center">{{ color }}</option>
 							{% endfor %}
@@ -65,7 +66,7 @@
 					<p class="text-center font-mid"><i>Manufacturer</i></p>
 
 					<center>
-						<select class="selectpicker show-tick" data-size=5 multiple title="Any manufacturer" data-live-search="true">
+						<select id="manufacturer" class="selectpicker show-tick" data-size=5 multiple title="Any manufacturer" data-live-search="true">
 							{% for manufacturer in manufacturers %}
 								<option class="text-center">{{ manufacturer.name }}</option>
 							{% endfor %}
@@ -74,12 +75,12 @@
 				</div>
 
 
-				<div class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 checkbox font-mid">
+				<div id="wifi" class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 checkbox font-mid">
 				  <label><input type="checkbox" value=""><i>Wifi</i></label>
 				</div>
 
 
-				<div class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 checkbox font-mid">
+				<div id="bluetooth" class="search-param col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 checkbox font-mid">
 				  <label><input type="checkbox" value=""><i>Bluetooth</i></label>
 				</div>
 
@@ -91,22 +92,8 @@
 		<div class="col-xs-12 col-sm-7 col-md-8 col-lg9">
 			<h3 class="text-center caption font-big">Products</h3>
 
-			<div class="row">
-				{% for sku in skus %}
-					<div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-						<a class="no-dec" href="{% url 'product' sku.id %}">
-							<div class="thumbnail shadow">
-								<img src="{{ MEDIA_URL }}{{ sku.image }}" alt="img">
-
-								<div class="caption product">
-									<p class="text-center product-name font-mid"><b>{{ sku.product.name }}</b></p>
-									<hr class="product-hr">
-									<h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
-								</div>
-							</div>
-						</a>
-					</div>
-				{% endfor %}
+			<div id="ajax-div" class="row">
+				{% include 'search-div.html' %}
 			</div>
 		</div>
 	</div>
@@ -116,17 +103,6 @@
 
 {% block scripts %}
 	<script src="{% static 'bootstrap/js/bootstrap-select.min.js' %}"></script>
-
-	<script type="text/javascript">
-		$(function(){
-			$('select').on('show.bs.select', function() {
-				var parent = $(this).parent();
-				$(parent).find('div.dropdown-menu.open').first().stop(true, true).slideDown();
-			});
-
-			$('select').on('hide.bs.select', function() {
-				$('div.dropdown-menu.open').stop(true, true).slideUp();
-			 });
-		});
-	</script>
+	<script src="{% static 'bootstrap/js/smooth-select.js' %}"></script>
+	<script src="{% static 'bootstrap/js/search-ajax.js' %}"></script>
 {% endblock %}

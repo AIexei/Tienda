@@ -1,5 +1,7 @@
 from django.shortcuts import render, HttpResponse
+from django.template.loader import render_to_string
 from .models import *
+
 
 # Create your views here.
 
@@ -20,6 +22,7 @@ def product(request, sku_id):
     context['sku'] = sku
     context['product'] = sku.product
     context['can_search'] = True
+    context['comments'] = sku.comments.all()
 
     return render(request, 'product.html', context)
 
@@ -31,6 +34,24 @@ def search(request):
     context['manufacturers'] = Manufacturer.objects.all().order_by('name')
     context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
     context['skus'] = SKU.objects.all()
+
+    '''
+    SKU.objects.filter(product__manufacturer__name='Xiaomi', color='gy', product__in=Category.objects.get(name='Phones').products.all())
+    '''
+
+    if request.is_ajax():
+        html = render_to_string('search-div.html', {'skus': SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())})
+        return HttpResponse(html)
+
+    if 'cname' in request.GET:
+        print(request.GET['cname'])
+        context['skus'] = SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())
+
+    if 'manufacturer' in request.GET:
+        print(request.GET['manufacturer'])
+
+    if 'color' in request.GET:
+        print(request.GET['color'])
 
     return render(request, 'search.html', context)
 

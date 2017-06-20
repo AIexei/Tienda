@@ -28,7 +28,7 @@
 
 					{% recursetree nodes %}
 						<li class="cat-item">
-							<a class="font-mid" href="#">{{ node.name }}</a>
+							<a class="font-mid" href="{{ node.get_url }}">{{ node.name }}</a>
 
 							{% if not node.is_leaf_node %}
 								<ul class="nav nav-list">
@@ -55,7 +55,7 @@
 								<img src="{{ MEDIA_URL }}{{ sku.image }}" alt="img">
 
 								<div class="caption product">
-									<p class="text-center product-name font-mid"><b>{{ sku.product.name }}</b></p>
+									<p class="text-center product-name font-mid"><b>{{ sku.product.manufacturer.name }} {{ sku.product.name }}</b></p>
 									<hr class="product-hr">
 									<h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
 								</div>

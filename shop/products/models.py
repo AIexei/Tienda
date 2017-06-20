@@ -2,8 +2,10 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
 from mptt.models import MPTTModel, TreeForeignKey
+from urllib.parse import urlencode, urlunsplit
 from datetime import datetime
 from re import sub
+import json
 import os
 
 
@@ -34,6 +36,11 @@ class Category(MPTTModel):
 
     name = models.CharField(max_length=100, unique=True)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='subcategories')
+
+    def get_url(self):
+        query = {'cname': self.name.lower()}
+        query_string = urlencode(query)
+        return urlunsplit(('', '', '/search', query_string, ''))
 
     def __str__(self):
         return self.name
@@ -171,7 +178,7 @@ class SKU(models.Model):
     product = models.ForeignKey(Product, related_name='SKUs')
     image = models.ImageField(upload_to=get_upload_path)
 
-
+    # noinspection PyTypeChecker
     def get_ppi(self):
         if self.screen_resolution:
             w, h = map(int, self.screen_resolution.split('x'))
@@ -179,6 +186,12 @@ class SKU(models.Model):
             return int(diagonal_in_px / self.screen_diagonal)
 
         return None
+
+
+    def to_json(self):
+        key_dict = {'sku.id': self.id, 'sku.image': self.image.name, 'sku.product.manufacturer.name': self.product.manufacturer.name,
+                'sku.product.name': self.product.name}
+        return json.dumps(key_dict)
 
     def save(self, *args, **kwargs):
         self.stock_id = '{}  {}{}{}{}{}'.format(self.product.name, self.color, self.body_material,
