@@ -36,12 +36,13 @@
 
 					<center>
 						<select id="category" class="selectpicker" data-size=5 title="All categories" data-live-search="true">
+							<option>All categories</option>
 
 							{% for category in categories %}
 								{% if category.parent is not None %}
-									<option class="text-center" data-subtext="{{ category.parent }}">{{ category.name }}</option>
+									<option data-subtext="{{ category.parent }}">{{ category.name }}</option>
 								{% else %}
-									<option class="text-center">{{ category.name }}</option>
+									<option>{{ category.name }}</option>
 								{% endif %}
 							{% endfor %}
 						</select>
@@ -54,8 +55,10 @@
 
 					<center>
 						<select id="color" class="selectpicker show-tick" data-size=5 multiple title="Any color" data-live-search="true">
+							<option>Any color</option>
+
 							{% for color in colors %}
-								<option class="text-center">{{ color }}</option>
+								<option>{{ color }}</option>
 							{% endfor %}
 						</select>
 					</center>
@@ -67,8 +70,10 @@
 
 					<center>
 						<select id="manufacturer" class="selectpicker show-tick" data-size=5 multiple title="Any manufacturer" data-live-search="true">
+							<option>Any manufacturer</option>
+
 							{% for manufacturer in manufacturers %}
-								<option class="text-center">{{ manufacturer.name }}</option>
+								<option>{{ manufacturer.name }}</option>
 							{% endfor %}
 						</select>
 					</center>
@@ -103,6 +108,6 @@
 
 {% block scripts %}
 	<script src="{% static 'bootstrap/js/bootstrap-select.min.js' %}"></script>
-	<script src="{% static 'bootstrap/js/smooth-select.js' %}"></script>
+	<script src="{% static 'bootstrap/js/search-select.js' %}"></script>
 	<script src="{% static 'bootstrap/js/search-ajax.js' %}"></script>
 {% endblock %}

@@ -28,20 +28,19 @@ def product(request, sku_id):
 
 
 def search(request):
+    # SKU.objects.filter(product__manufacturer__name='Xiaomi', color='gy', product__in=Category.objects.get(name='Phones').products.all())
+
+    if request.is_ajax():
+        queryset = SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())
+        html = render_to_string('search-div.html', {'skus': queryset})
+        return HttpResponse(html)
+
     context = dict()
     context['can_search'] = True
     context['categories'] = Category.objects.all().order_by('level')
     context['manufacturers'] = Manufacturer.objects.all().order_by('name')
     context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
     context['skus'] = SKU.objects.all()
-
-    '''
-    SKU.objects.filter(product__manufacturer__name='Xiaomi', color='gy', product__in=Category.objects.get(name='Phones').products.all())
-    '''
-
-    if request.is_ajax():
-        html = render_to_string('search-div.html', {'skus': SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())})
-        return HttpResponse(html)
 
     if 'cname' in request.GET:
         print(request.GET['cname'])
