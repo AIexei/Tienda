@@ -1,7 +1,10 @@
 from django.shortcuts import render, HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.template .context_processors import csrf
+from django.db.models import QuerySet
 from .models import *
+import json
 
 
 # Create your views here.
@@ -20,10 +23,12 @@ def product(request, sku_id):
     sku = SKU.objects.get(id=sku_id)
 
     context = dict()
+    context.update(csrf(request))
     context['sku'] = sku
     context['product'] = sku.product
     context['can_search'] = True
     context['comments'] = sku.comments.all()
+    context['comment_form'] = CommentForm
 
     try:
         user_profile = UserProfile.objects.get(user__id=request.user.id)
@@ -31,16 +36,30 @@ def product(request, sku_id):
     except Exception as e:
         print(e)
 
-
-
     return render(request, 'product.html', context)
 
 
 def search(request):
-    # SKU.objects.filter(product__manufacturer__name='Xiaomi', color='gy', product__in=Category.objects.get(name='Phones').products.all())
+    queryset = SKU.objects.all()
+
+    try:
+        if 'cat' in request.GET:
+            category = request.GET['cat']
+            queryset = queryset.filter(product__in=Category.objects.get(name=category).products.all())
+
+        if 'clrs' in request.GET:
+            colors = json.loads(request.GET['clrs'])
+            queryset = queryset.filter(color__in=colors)
+
+        if 'manufs' in request.GET:
+            manufacturers = json.loads(request.GET['manufs'])
+            queryset = queryset.filter(product__manufacturer__name__in=manufacturers)
+
+    except Exception:
+        queryset = SKU.objects.none()
+
 
     if request.is_ajax():
-        queryset = SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())
         html = render_to_string('includes/search-div.html', {'skus': queryset})
         return HttpResponse(html)
 
@@ -49,7 +68,7 @@ def search(request):
     context['categories'] = Category.objects.all().order_by('level')
     context['manufacturers'] = Manufacturer.objects.all().order_by('name')
     context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
-    context['skus'] = SKU.objects.all()
+    context['skus'] = queryset
 
     return render(request, 'search.html', context)
 
@@ -67,7 +86,7 @@ def favourites(request):
 
 
 @login_required
-def like(request):
+def like_action(request):
     sku_id = int(request.GET['id'])
     sku = SKU.objects.get(id=sku_id)
 
@@ -83,9 +102,11 @@ def like(request):
 
     user_profile.save()
     html = render_to_string('includes/btns.html', data)
+
     return HttpResponse(html)
 
 
-
-
-
+@login_required
+def add_comment(request):
+    if request.POST:
+        pass

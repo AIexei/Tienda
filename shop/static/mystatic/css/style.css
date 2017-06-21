@@ -200,6 +200,11 @@ div#product-buttons {
 	margin-top: 22px;
 }
 
+div#add-comment {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 img#product-image {
     border: 0;
 }

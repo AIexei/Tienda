@@ -45,13 +45,13 @@
 	                        <div id="product-categories-div">
 								{% for category in product.categories.all %}
 									{% if category.level == 0 %}
-										<a href="#"><button type="button" class="btn btn-success product-categories font-small">{{ category.name }}</button></a>
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-success product-categories font-small">{{ category.name }}</button></a>
 									{% elif category.level == 1 %}
-										<a href="#"><button type="button" class="btn btn-info product-categories font-small">{{ category.name }}</button></a>
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-info product-categories font-small">{{ category.name }}</button></a>
 									{% elif category.level == 2 %}
-										<a href="#"><button type="button" class="btn btn-warning product-categories font-small">{{ category.name }}</button></a>
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-warning product-categories font-small">{{ category.name }}</button></a>
 									{% else %}
-										<a href="#"><button type="button" class="btn btn-default product-categories font-small">{{ category.name }}</button></a>
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-default product-categories font-small">{{ category.name }}</button></a>
 									{% endif %}
 								{% endfor %}
 	                        </div>
@@ -242,24 +242,24 @@
 
 				<p class="font-big "><b>Comments ({{ comments.count }})</b></p>
 
-                {% for comment in comments %}
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 comment">
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                <b class="font-mid">{{ comment.owner.user.username }}</b>
-                            </div>
+				{% include 'includes/comments.html' %}
 
-                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
-                                <i class="font-mid">{{ comment.date }}</i>
-                            </div>
+				<hr class="product-hr">
 
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 font-small">
-                                <hr class="comment-hr">
-                                {{ comment.content }}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+				{% if user.is_authenticated %}
+					<div id="add-comment" class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+						<form method="post" action="">
+							{% csrf_token %}
+
+							<div class="form-group">
+								<label class="font-mid" for="comment-content">Example textarea</label>
+								<textarea class="form-control font-small" id="comment-content" rows="3"></textarea>
+							</div>
+
+							<button class="btn btn-lg btn-primary btn-block font-mid" type="submit">Submit</button>
+						</form>
+					</div>
+				{% endif %}
 
 			</div>
 		</div>
@@ -268,5 +268,6 @@
 
 
 {% block scripts %}
-	<script src="{% static 'bootstrap/js/like-ajax.js' %}"></script>
+	<script src="{% static 'mystatic/js/like-ajax.js' %}"></script>
+	<script src="{% static 'mystatic/js/comment-ajax.js' %}"></script>
 {% endblock %}

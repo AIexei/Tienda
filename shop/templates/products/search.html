@@ -6,7 +6,8 @@
 
 
 {% block links %}
-	<link href="{% static 'bootstrap/css/bootstrap-select.min.css' %}" rel="stylesheet">
+	<!--suppress XmlDuplicatedId -->
+<link href="{% static 'bootstrap/css/bootstrap-select.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 
@@ -58,7 +59,7 @@
 							<option>Any color</option>
 
 							{% for color in colors %}
-								<option>{{ color }}</option>
+								<option class="color">{{ color }}</option>
 							{% endfor %}
 						</select>
 					</center>
@@ -79,16 +80,16 @@
 					</center>
 				</div>
 
-
-				<div id="wifi" class="search-param hidden-xs col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 checkbox font-mid">
-				  <label><input type="checkbox" value=""><i>Wifi</i></label>
+				<!--
+				<div class="search-param hidden-xs col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 checkbox font-mid">
+					<label><input id="wifi" type="checkbox" value=""><i>Wifi</i></label>
 				</div>
 
 
-				<div id="bluetooth" class="search-param hidden-xs col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 checkbox font-mid">
-				  <label><input type="checkbox" value=""><i>Bluetooth</i></label>
+				<div class="search-param hidden-xs col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 checkbox font-mid">
+				  <label><input id="bluetooth" type="checkbox" value=""><i>Bluetooth</i></label>
 				</div>
-
+				-->
 			</div>
 
 		</div>
@@ -108,6 +109,6 @@
 
 {% block scripts %}
 	<script src="{% static 'bootstrap/js/bootstrap-select.min.js' %}"></script>
-	<script src="{% static 'bootstrap/js/search-select.js' %}"></script>
-	<script src="{% static 'bootstrap/js/search-ajax.js' %}"></script>
+	<script src="{% static 'mystatic/js/search-select.js' %}"></script>
+	<script src="{% static 'mystatic/js/search-ajax.js' %}"></script>
 {% endblock %}

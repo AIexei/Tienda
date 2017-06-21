@@ -37,7 +37,7 @@ class Category(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='subcategories')
 
     def get_url(self):
-        query = {'cname': self.name.lower()}
+        query = {'cat': self.name}
         query_string = urlencode(query)
         return urlunsplit(('', '', '/search', query_string, ''))
 
@@ -138,6 +138,7 @@ def update_categories(sender, instance, **kwargs):
                     instance.categories.add(ancestor)
 
 
+# noinspection PyTypeChecker
 class SKU(models.Model):
     class Meta:
         verbose_name_plural = 'SKUs'
@@ -175,7 +176,7 @@ class SKU(models.Model):
     product = models.ForeignKey(Product, related_name='SKUs')
     image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
 
-    # noinspection PyTypeChecker
+
     def get_ppi(self):
         if self.screen_resolution:
             w, h = map(int, self.screen_resolution.split('x'))
