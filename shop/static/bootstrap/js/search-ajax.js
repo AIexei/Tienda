@@ -30,7 +30,7 @@ $(document).ready(function() {
             },
 
             failure: function() {
-                alert('Invalid data');
+                alert('Error');
             }
         });
     });

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 
 {% block title %}{{ product.manufacturer }} {{ product.name }}{% endblock %}
@@ -73,9 +74,10 @@
 
 					<div id="product-buttons" class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
                         {% if user.is_authenticated %}
-                            <a href="#"><button type="button" class="btn btn-danger font-mid actionbutton">Like</button></a>
-                            <a href="#"><button type="button" class="btn btn-info font-mid actionbutton">Buy</button></a>
-                        {% endif %}
+							<div id="btns">
+								{% include 'includes/btns.html' %}
+							</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -262,4 +264,9 @@
 			</div>
 		</div>
 
+{% endblock %}
+
+
+{% block scripts %}
+	<script src="{% static 'bootstrap/js/like-ajax.js' %}"></script>
 {% endblock %}

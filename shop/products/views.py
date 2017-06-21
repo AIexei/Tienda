@@ -1,5 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, Http404
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 from .models import *
 
 
@@ -24,6 +25,14 @@ def product(request, sku_id):
     context['can_search'] = True
     context['comments'] = sku.comments.all()
 
+    try:
+        user_profile = UserProfile.objects.get(user__id=request.user.id)
+        context['is_liked'] = bool(user_profile.favourites.filter(id=sku.id))
+    except Exception as e:
+        print(e)
+
+
+
     return render(request, 'product.html', context)
 
 
@@ -32,7 +41,7 @@ def search(request):
 
     if request.is_ajax():
         queryset = SKU.objects.filter(product__in=Category.objects.get(name=request.GET['cname']).products.all())
-        html = render_to_string('search-div.html', {'skus': queryset})
+        html = render_to_string('includes/search-div.html', {'skus': queryset})
         return HttpResponse(html)
 
     context = dict()
@@ -45,7 +54,7 @@ def search(request):
     return render(request, 'search.html', context)
 
 
-# login required
+@login_required
 def favourites(request):
     user_profile = UserProfile.objects.get(user__id=request.user.id)
 
@@ -55,3 +64,28 @@ def favourites(request):
     context['is_empty'] = not bool(context['liked_skus'].count())
 
     return render(request, 'favourites.html', context)
+
+
+@login_required
+def like(request):
+    sku_id = int(request.GET['id'])
+    sku = SKU.objects.get(id=sku_id)
+
+    user_profile = UserProfile.objects.get(user__id=request.user.id)
+    action = request.GET['action']
+
+    if action == 'lk':
+        user_profile.favourites.add(sku)
+        data = {'is_liked': True}
+    else:
+        user_profile.favourites.remove(sku)
+        data = {'is_liked': False}
+
+    user_profile.save()
+    html = render_to_string('includes/btns.html', data)
+    return HttpResponse(html)
+
+
+
+
+

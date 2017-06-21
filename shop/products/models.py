@@ -4,8 +4,8 @@ from django.db.models.signals import m2m_changed
 from mptt.models import MPTTModel, TreeForeignKey
 from urllib.parse import urlencode, urlunsplit
 from datetime import datetime
+from .storage import OverwriteStorage
 from re import sub
-import json
 import os
 
 # Create your models here.
@@ -173,7 +173,7 @@ class SKU(models.Model):
 
     stock_id = models.CharField(max_length=50, unique=True)
     product = models.ForeignKey(Product, related_name='SKUs')
-    image = models.ImageField(upload_to=get_upload_path)
+    image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
 
     # noinspection PyTypeChecker
     def get_ppi(self):
@@ -184,17 +184,10 @@ class SKU(models.Model):
 
         return None
 
-
-    def to_json(self):
-        key_dict = {'sku.id': self.id, 'sku.image': self.image.name, 'sku.product.manufacturer.name': self.product.manufacturer.name,
-                'sku.product.name': self.product.name}
-        return json.dumps(key_dict)
-
     def save(self, *args, **kwargs):
         self.stock_id = '{}  {}{}{}{}{}'.format(self.product.name, self.color, self.body_material,
                                                   str(self.screen_diagonal), self.screen_resolution,
                                                   str(self.weight))
-
         super(SKU, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
