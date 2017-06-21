@@ -28,7 +28,6 @@ def product(request, sku_id):
     context['product'] = sku.product
     context['can_search'] = True
     context['comments'] = sku.comments.all()
-    context['comment_form'] = CommentForm
 
     try:
         user_profile = UserProfile.objects.get(user__id=request.user.id)

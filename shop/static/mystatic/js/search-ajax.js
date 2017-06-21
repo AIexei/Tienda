@@ -1,20 +1,30 @@
 $(document).ready(function() {
     console.log('ready');
 
+
     var category = getParameterByName('cat');
-    var colors = JSON.parse(getParameterByName('clrs'))
     var manufacturers = JSON.parse(getParameterByName('manufs'));
 
-
     console.log(category);
-    console.log(colors);
     console.log(manufacturers);
+
+    var colors = JSON.parse(getParameterByName('clrs'))
+
+    if (colors != null) {
+        colors = colors.map(function(shortName) {
+            return selectColor(shortName, 'select#color option.color');
+        });
+    }
+
+
+    console.log(colors);
+
+
 
     $('select#category').selectpicker('val', category);
     $('select#manufacturer').selectpicker('val', manufacturers);
-    $('select#color').selectpicker('val', ['Black', '']);
+    $('select#color').selectpicker('val', colors);
 
-    var selectedColors = selectColors('bk', 'select#color option');
 
     /*
     $('input[type=checkbox]').on('change', function() {
@@ -36,8 +46,7 @@ $(document).ready(function() {
         }
 
         if (colors != null) {
-            colors = colors.map(colorShort);
-
+            colors = colors.map(getColorShortName);
             params['clrs'] = JSON.stringify(colors);
         }
 
@@ -74,21 +83,30 @@ function getParameterByName(name, url) {
 }
 
 
-function colorShort(longName) {
+function getColorShortName(longName) {
     longName = longName.toLowerCase();
     return longName[0] + longName[longName.length-1];
 }
 
 
-function selectColors(shortNames, selector) {
-    if (shortName.length == 2) {
-        firstSymbol = shortName[0].toUpperCase();
-        lastSymbol = shortName[1];
-    }
-
-    $(selector).each(function(index, value) {
-        console.log(index, $(this).val());
-    });
+function checker(name, fs, ls) {
+    return (name[0] == fs) && (name[name.length == ls])
 }
 
 
+function selectColor(shortName, selector) {
+    if (shortName.length == 2) {
+        firstSymbol = shortName[0].toUpperCase();
+        lastSymbol = shortName[1];
+
+         $(selector).each(function(index, value) {
+            colorFullName = $(this).val();
+
+            if (checker(colorFullName, firstSymbol, lastSymbol)) {
+                return colorFullName;
+            }
+         });
+    }
+
+    return '';
+}

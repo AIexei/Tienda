@@ -7,6 +7,7 @@
 
 {% block navbar-lis %}
 	{% if user.is_authenticated %}
+		<!--suppress ALL -->
 		<li><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
 		<li><a href="{% url 'favourites' %}">Liked</a></li>
 		<li id="last-li"><a href="{% url 'logout' %}">Logout</a></li>
@@ -65,6 +66,8 @@
 			<div id="info" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<hr class="product-hr">
 
+				<p class="font-big text-center"><i>Information</i></p>
+
 				<div class="row text-left">
 					<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 font-mid">
 						<p class="no-margin font-mid"><b id="owner">Manufacturer: </b>{{ product.manufacturer.name }}</p>
@@ -86,23 +89,24 @@
 			<div id="characteristics" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<hr class="product-hr">
 
-				<table class="font-small table table-bordered">
+
+				<table class="font-small table table-striped">
 				  	<tbody>
 				    	<tr>
-				      		<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Color</th>
+				      		<th class="col-xs-6 col-sm-6 col-md-6 col-lg-6" scope="row">Color</th>
 				      		<td>{{ sku.get_color_display }}</td>
 				    	</tr>
 
 
 				    	<tr>
-				      		<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Body material</th>
+				      		<th class="col-xs-6 col-sm-6 col-md-6 col-lg-6" scope="row">Body material</th>
 				      		<td>{{ sku.get_body_material_display }}</td>
 						</tr>
 
 
 						{% if product.os_type %}
 						<tr>
-						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Operational system</th>
+						  	<th class="col-xs-6 col-sm-6 col-md-6 col-lg-6" scope="row">Operational system</th>
 						  	<td>{{ product.get_os_type_display }}</td>
 						</tr>
 						{% endif %}
@@ -240,7 +244,7 @@
 			<div id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<hr class="product-hr">
 
-				<p class="font-big "><b>Comments ({{ comments.count }})</b></p>
+				<p class="font-big text-center"><i>Comments ({{ comments.count }})</i></p>
 
 				{% include 'includes/comments.html' %}
 

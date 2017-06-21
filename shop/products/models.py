@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.dispatch import receiver
 from django.db.models.signals import m2m_changed
 from mptt.models import MPTTModel, TreeForeignKey
@@ -7,13 +8,22 @@ from datetime import datetime
 from .storage import OverwriteStorage
 from re import sub
 import os
+import re
 
 # Create your models here.
+
 
 def get_upload_path(instance, filename):
     file_type = filename.split('.')[-1]
     return os.path.join(datetime.now().date().strftime('%Y/%m/%d'),
                         '{}.{}'.format(sub(r'\s|\.', '', instance.stock_id), file_type))
+
+
+def search_sku_by_regex(string):
+    products = list(Product.objects.all())
+    products = filter(lambda x: re.search(string, x.fullname(), re.IGNORECASE), products)
+    skus = SKU.objects.filter(product__in=products)
+    return skus
 
 
 class Manufacturer(models.Model):
@@ -123,6 +133,9 @@ class Product(models.Model):
         return lists_dict
     '''
 
+    def fullname(self):
+        return '{} {}'.format(self.manufacturer.name, self.name)
+
     def __str__(self):
         return self.name
 
@@ -176,6 +189,7 @@ class SKU(models.Model):
     product = models.ForeignKey(Product, related_name='SKUs')
     image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
 
+    # x = Product.objects.filter(Q(name__iregex=r'a') | Q(manufacturer__name__iregex=r'a'))
 
     def get_ppi(self):
         if self.screen_resolution:

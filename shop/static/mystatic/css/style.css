@@ -44,7 +44,7 @@
 .product-hr {
 	color: black; 
 	background-color: #bbb; 
-	margin: 15px 0;
+	margin: 20px 0;
 }
 
 .product-name {
@@ -201,6 +201,11 @@ div#product-buttons {
 }
 
 div#add-comment {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+div#table-div {
     padding-left: 0;
     padding-right: 0;
 }
