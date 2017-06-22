@@ -221,7 +221,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Comments'
 
     owner = models.ForeignKey(UserProfile, related_name='comments')
-    date = models.DateField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
     sku = models.ForeignKey(SKU, related_name='comments')
 

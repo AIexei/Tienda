@@ -203,6 +203,11 @@ div#product-buttons {
 div#add-comment {
     padding-left: 0;
     padding-right: 0;
+    margin-bottom: 30px;
+}
+
+div#comment {
+    max-width: 800px;
 }
 
 div#table-div {
@@ -212,6 +217,12 @@ div#table-div {
 
 img#product-image {
     border: 0;
+}
+
+input#btn-comment {
+    padding: 10px 0;
+    width: 50%;
+    max-width: 400px;
 }
 
 /* xs */

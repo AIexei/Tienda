@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^favourites/$', views.favourites, name='favourites'),
     url(r'^search/$', views.search, name='search'),
     url(r'^like/', views.like_action, name='like_action'),
+    url(r'^add_comment/(?P<sku_id>\d+)/$', views.add_comment, name='add_comment'),
 ]

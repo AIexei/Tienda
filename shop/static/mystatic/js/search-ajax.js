@@ -1,13 +1,6 @@
 $(document).ready(function() {
-    console.log('ready');
-
-
     var category = getParameterByName('cat');
     var manufacturers = JSON.parse(getParameterByName('manufs'));
-
-    console.log(category);
-    console.log(manufacturers);
-
     var colors = JSON.parse(getParameterByName('clrs'))
 
     if (colors != null) {
@@ -15,11 +8,6 @@ $(document).ready(function() {
             return selectColor(shortName, 'select#color option.color');
         });
     }
-
-
-    console.log(colors);
-
-
 
     $('select#category').selectpicker('val', category);
     $('select#manufacturer').selectpicker('val', manufacturers);
@@ -56,7 +44,7 @@ $(document).ready(function() {
 
         $.ajax({
             url: '/search/',
-            type: 'get',
+            type: 'GET',
             data: params,
 
             success: function(data) {
@@ -90,11 +78,13 @@ function getColorShortName(longName) {
 
 
 function checker(name, fs, ls) {
-    return (name[0] == fs) && (name[name.length == ls])
+    return (name[0] == fs) && (name[name.length-1] == ls);
 }
 
 
 function selectColor(shortName, selector) {
+    result = ''
+
     if (shortName.length == 2) {
         firstSymbol = shortName[0].toUpperCase();
         lastSymbol = shortName[1];
@@ -103,10 +93,11 @@ function selectColor(shortName, selector) {
             colorFullName = $(this).val();
 
             if (checker(colorFullName, firstSymbol, lastSymbol)) {
-                return colorFullName;
+                result = colorFullName;
+                return false;
             }
          });
     }
 
-    return '';
+    return result;
 }

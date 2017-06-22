@@ -1,8 +1,9 @@
-from django.shortcuts import render, HttpResponse, Http404
+from django.shortcuts import render, redirect, HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.template .context_processors import csrf
-from django.db.models import QuerySet
+from ratelimit.decorators import ratelimit
+from ratelimit.utils import is_ratelimited
 from .models import *
 import json
 
@@ -27,7 +28,7 @@ def product(request, sku_id):
     context['sku'] = sku
     context['product'] = sku.product
     context['can_search'] = True
-    context['comments'] = sku.comments.all()
+    context['comments'] = sku.comments.all().order_by('-time')
 
     try:
         user_profile = UserProfile.objects.get(user__id=request.user.id)
@@ -38,6 +39,7 @@ def product(request, sku_id):
     return render(request, 'product.html', context)
 
 
+@ratelimit(key='ip', rate='3/s', block=True)
 def search(request):
     queryset = SKU.objects.all()
 
@@ -106,6 +108,15 @@ def like_action(request):
 
 
 @login_required
-def add_comment(request):
-    if request.POST:
-        pass
+@ratelimit(key='user', rate='10/m', block=True)
+def add_comment(request, sku_id):
+    if request.POST and request.is_ajax():
+        text = request.POST['content']
+        user_profile = UserProfile.objects.get(user__id=request.user.id)
+        sku = SKU.objects.get(id=sku_id)
+
+        sku.comments.create(owner=user_profile, content=text)
+
+        data = {'comments': sku.comments.all().order_by('-time')}
+        html = render_to_string('includes/comments.html', data)
+        return HttpResponse(html)

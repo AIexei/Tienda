@@ -35,7 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('content', 'owner', 'sku', 'date',)
+    list_display = ('content', 'owner', 'sku', 'time',)
 
 
 class SKUAdmin(admin.ModelAdmin):

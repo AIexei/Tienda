@@ -241,30 +241,32 @@
 			</div>
 
 
+
+
+
 			<div id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 				<hr class="product-hr">
 
-				<p class="font-big text-center"><i>Comments ({{ comments.count }})</i></p>
-
-				{% include 'includes/comments.html' %}
-
-				<hr class="product-hr">
+				<p class="font-big text-center"><i>Comments</i></p>
 
 				{% if user.is_authenticated %}
 					<div id="add-comment" class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-						<form method="post" action="">
+						<form>
 							{% csrf_token %}
+							<center>
+								<div id="comment" class="form-group">
+									<textarea required class="form-control font-small" name="content" id="comment-content" rows="3"></textarea>
+								</div>
 
-							<div class="form-group">
-								<label class="font-mid" for="comment-content">Example textarea</label>
-								<textarea class="form-control font-small" id="comment-content" rows="3"></textarea>
-							</div>
-
-							<button class="btn btn-lg btn-primary btn-block font-mid" type="submit">Submit</button>
+								<input id="btn-comment" class="btn btn-primary btn-block font-mid" value="Add comment" type="submit"/>
+							</center>
 						</form>
 					</div>
 				{% endif %}
 
+				<div id="cmnts">
+					{% include 'includes/comments.html' %}
+				</div>
 			</div>
 		</div>
 

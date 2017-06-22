@@ -18,7 +18,7 @@ $(document).ready(function() {
         if (id != null) {
             $.ajax({
                 url: '/like/',
-                type: 'get',
+                type: 'GET',
                 data: params,
 
                 success: function(data) {
