@@ -7,7 +7,7 @@ def user_login(request):
     context = dict()
     context['can_search'] = False
 
-    return render(request, 'login.html', context)
+    return render(request, 'loginsys/login.html', context)
 
 
 def user_logout(request):
@@ -18,4 +18,4 @@ def user_register(request):
     context = dict()
     context['can_search'] = False
 
-    return render(request, 'register.html', context)
+    return render(request, 'loginsys/register.html', context)

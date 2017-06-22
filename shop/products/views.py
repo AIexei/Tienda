@@ -7,7 +7,7 @@ from ratelimit.decorators import ratelimit
 from .models import *
 import json
 
-
+'''
 class Index(ListView):
     model = SKU
     template_name = 'index.html'
@@ -18,16 +18,17 @@ class Index(ListView):
         context['nodes'] = Category.objects.all()
         context['can_search'] = True
         return context
+'''
 
 
-'''def index(request):
+def index(request):
     context = dict()
     context['skus'] = SKU.objects.all()
     context['nodes'] = Category.objects.all()
     context['can_search'] = True
 
-    return render(request, 'index.html', context)
-'''
+    return render(request, 'products/index.html', context)
+
 
 
 def product(request, sku_id):
@@ -46,7 +47,7 @@ def product(request, sku_id):
     except Exception as e:
         print(e)
 
-    return render(request, 'product.html', context)
+    return render(request, 'products/product.html', context)
 
 
 @ratelimit(key='ip', rate='10/s', block=True)
@@ -80,7 +81,7 @@ def search(request):
 
     if request.is_ajax():
         data = {'skus': queryset, 'is_empty': not bool(queryset.count())}
-        html = render_to_string('includes/search-div.html', data)
+        html = render_to_string('products/includes/search-div.html', data)
         return HttpResponse(html)
 
     context = dict()
@@ -91,7 +92,7 @@ def search(request):
     context['is_empty'] = not bool(queryset.count())
     context['skus'] = queryset
 
-    return render(request, 'search.html', context)
+    return render(request, 'products/search.html', context)
 
 
 @login_required
@@ -103,7 +104,7 @@ def favourites(request):
     context['liked_skus'] = user_profile.favourites.all()
     context['is_empty'] = not bool(context['liked_skus'].count())
 
-    return render(request, 'favourites.html', context)
+    return render(request, 'products/favourites.html', context)
 
 
 @login_required
@@ -122,7 +123,7 @@ def like_action(request):
         data = {'is_liked': False}
 
     user_profile.save()
-    html = render_to_string('includes/btns.html', data)
+    html = render_to_string('products/includes/btns.html', data)
 
     return HttpResponse(html)
 
@@ -138,5 +139,5 @@ def add_comment(request, sku_id):
         sku.comments.create(owner=user_profile, content=text)
 
         data = {'comments': sku.comments.all().order_by('-time')}
-        html = render_to_string('includes/comments.html', data)
+        html = render_to_string('products/includes/comments.html', data)
         return HttpResponse(html)

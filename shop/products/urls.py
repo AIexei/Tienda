@@ -3,7 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^$', views.Index.as_view() , name='index'),
+    url(r'^$', views.index , name='index'),
     url(r'^product/id(?P<sku_id>\d+)/$', views.product, name='product'),
     url(r'^favourites/$', views.favourites, name='favourites'),
     url(r'^search/', views.search, name='search'),

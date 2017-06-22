@@ -1,0 +1,275 @@
+{% extends 'admin/base.html' %}
+{% load staticfiles %}
+
+
+{% block title %}{{ product.manufacturer }} {{ product.name }}{% endblock %}
+
+
+{% block navbar-lis %}
+	{% if user.is_authenticated %}
+		<!--suppress ALL -->
+		<li><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+		<li><a href="{% url 'favourites' %}">Liked</a></li>
+		<li id="last-li"><a href="{% url 'logout' %}">Logout</a></li>
+	{% else %}
+		<li><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+		<li><a href="{% url 'login' %}">Login</a></li>
+		<li id="last-li"><a href="{% url 'register' %}">Register</a></li>
+	{% endif %}
+{% endblock%}
+
+
+{% block body %}
+
+		<div id="product-div" class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+			<!--photo-->
+			<div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+				<div id="image" class="thumbnail">
+					<img class="img-responsive" id="product-image" src="{{ MEDIA_URL }}{{ sku.image }}" alt="img">
+				</div>
+			</div>
+
+			<!-- description -->
+			<div id="description" class="col-xs-12 col-sm-7 col-md-8 col-lg-8 col-lg-offset-1">
+				<div class="caption-full">
+						<div class="row">
+	                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+	                        	<h3 id="product-name" class="font-big"><b>{{ product.manufacturer }} {{ product.name }}</b></h3>
+	                        </div>
+
+	                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
+					 			<h3 id="product-cost" class="font-big"><b>$24.99</b></h3>
+					 		</div>
+                        </div>
+
+                        <center>
+	                        <div id="product-categories-div">
+								{% for category in product.categories.all %}
+									{% if category.level == 0 %}
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-success product-categories font-small">{{ category.name }}</button></a>
+									{% elif category.level == 1 %}
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-info product-categories font-small">{{ category.name }}</button></a>
+									{% elif category.level == 2 %}
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-warning product-categories font-small">{{ category.name }}</button></a>
+									{% else %}
+										<a href="{{ category.get_url }}"><button type="button" class="btn btn-default product-categories font-small">{{ category.name }}</button></a>
+									{% endif %}
+								{% endfor %}
+	                        </div>
+                        </center>
+
+                        <p class="font-small">{{ product.description }}</p>
+                </div>
+			</div>
+
+
+			<div id="info" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<hr class="product-hr">
+
+				<p class="font-big text-center"><i>Information</i></p>
+
+				<div class="row text-left">
+					<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 font-mid">
+						<p class="no-margin font-mid"><b id="owner">Manufacturer: </b>{{ product.manufacturer.name }}</p>
+						<p class="no-margin font-mid"><b id="phone">In store: </b>120</p>
+					</div>
+
+
+					<div id="product-buttons" class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
+                        {% if user.is_authenticated %}
+							<div id="btns">
+								{% include 'products/includes/btns.html' %}
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+
+			<div id="characteristics" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<hr class="product-hr">
+
+
+				<table class="font-small table table-striped">
+				  	<tbody>
+				    	<tr>
+				      		<th class="col-xs-6 col-sm-6 col-md-6 col-lg-6" scope="row">Color</th>
+				      		<td>{{ sku.get_color_display }}</td>
+				    	</tr>
+
+
+				    	<tr>
+				      		<th class="col-xs-6 col-sm-6 col-md-6 col-lg-6" scope="row">Body material</th>
+				      		<td>{{ sku.get_body_material_display }}</td>
+						</tr>
+
+
+						{% if product.os_type %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-6 col-lg-6" scope="row">Operational system</th>
+						  	<td>{{ product.get_os_type_display }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.creation_year %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Creation year</th>
+						  	<td>{{ product.creation_year }}</td>
+						</tr>
+						{% endif %}
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Weight</th>
+						  	<td>{{ sku.weight }} grams</td>
+						</tr>
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Screen diagonal</th>
+						  	<td>{{ sku.screen_diagonal }}"</td>
+						</tr>
+
+
+						{% if sku.screen_resolution %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Screen resolution</th>
+						  	<td>{{ sku.screen_resolution }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if sku.get_ppi %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Pixels per inch</th>
+						  	<td>{{ sku.get_ppi }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.camera %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Camera</th>
+						  	<td>{{ product.camera }} megapixels</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.processor %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Processor</th>
+						  	<td>{{ product.processor }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.cores_count %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Cores count</th>
+						  	<td>{{ product.cores_count }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.ram %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">RAM</th>
+						  	<td>{{ product.ram }} gigabytes</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.builtin_memory %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Built-in memory</th>
+						  	<td>{{ product.builtin_memory }} gigabytes</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.battery_type %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Battery type</th>
+						  	<td>{{ product.get_battery_type_display }}</td>
+						</tr>
+						{% endif %}
+
+
+						{% if sku.battery_capacity %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Battery capacity</th>
+						  	<td>{{ sku.battery_capacity }} milliamp * hour</td>
+						</tr>
+						{% endif %}
+
+
+						{% if product.connectors %}
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Connectors</th>
+						  	<td>{{ product.connectors }}</td>
+						</tr>
+						{% endif %}
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Wifi</th>
+
+							{% if product.has_wifi %}
+						  		<td>Yes</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+
+
+						<tr>
+						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Bluetooth</th>
+
+							{% if product.has_bluetooth %}
+						  		<td>Yes</td>
+							{% else %}
+								<td>No</td>
+							{% endif %}
+						</tr>
+				  	</tbody>
+				</table>
+			</div>
+
+
+
+
+
+			<div id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+				<hr class="product-hr">
+
+				<p class="font-big text-center"><i>Comments</i></p>
+
+				{% if user.is_authenticated %}
+					<div id="add-comment" class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+						<form>
+							{% csrf_token %}
+							<center>
+								<div id="comment" class="form-group">
+									<textarea required class="form-control font-small" name="content" id="comment-content" rows="3"></textarea>
+								</div>
+
+								<input id="btn-comment" class="btn btn-primary btn-block font-mid" value="Add comment" type="submit"/>
+							</center>
+						</form>
+					</div>
+				{% endif %}
+
+				<div id="cmnts">
+					{% include 'products/includes/comments.html' %}
+				</div>
+			</div>
+		</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+	<script src="{% static 'products/js/like-ajax.js' %}"></script>
+	<script src="{% static 'products/js/comment-ajax.js' %}"></script>
+{% endblock %}

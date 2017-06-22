@@ -1,0 +1,20 @@
+{% if is_empty %}
+    <p class="text-center font-mid message">No products found</p>
+{% else %}
+    {% for sku in skus %}
+        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+            <a class="no-dec" href="{% url 'product' sku.id %}">
+                <div class="thumbnail shadow">
+                    <img src="/media/{{ sku.image }}" alt="img">
+
+                    <div class="caption product">
+                        <p class="text-center product-name font-mid"><b>{{ sku.product.manufacturer.name }}</b></p>
+                        <p class="text-center product-name font-mid"><b>{{ sku.product.name }}</b></p>
+                        <hr class="product-hr">
+                        <h4 class="text-center cost-text font-mid"><b>$24.99</b></h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+{% endif %}
