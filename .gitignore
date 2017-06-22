@@ -3,4 +3,4 @@
 *.iml
 *~
 temp.py
-shop/media/*
+shop/media

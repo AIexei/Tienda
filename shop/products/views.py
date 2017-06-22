@@ -23,12 +23,13 @@ class Index(ListView):
 
 def index(request):
     context = dict()
-    context['skus'] = SKU.objects.all()
+
+    sku_related_field = ['product__name', 'product__manufacturer__name']
+    context['skus'] = SKU.objects.select_related().only(*sku_related_field)
     context['nodes'] = Category.objects.all()
     context['can_search'] = True
 
     return render(request, 'products/index.html', context)
-
 
 
 def product(request, sku_id):
@@ -39,7 +40,9 @@ def product(request, sku_id):
     context['sku'] = sku
     context['product'] = sku.product
     context['can_search'] = True
-    context['comments'] = sku.comments.all().order_by('-time')
+
+    comment_related_field = ['owner__user__username']
+    context['comments'] = sku.comments.select_related().only(*comment_related_field).order_by('-time')
 
     try:
         user_profile = UserProfile.objects.get(user__id=request.user.id)
@@ -50,14 +53,16 @@ def product(request, sku_id):
     return render(request, 'products/product.html', context)
 
 
-@ratelimit(key='ip', rate='10/s', block=True)
+@ratelimit(key='ip', rate='5/s', block=True)
 def search(request):
-    queryset = SKU.objects.all()
+    sku_related_fields = ['product__name', 'product__manufacturer__name']
+    defer_fields = ['screen_diagonal', 'screen_resolution', 'body_maretial', 'weight', 'battery_capacity']
+    queryset = SKU.objects.defer(*defer_fields).select_related().only(*sku_related_fields)
 
     try:
         if 'cat' in request.GET:
             category = request.GET['cat']
-            queryset = queryset.filter(product__in=Category.objects.get(name=category).products.all())
+            queryset = queryset.filter(product__in=Category.objects.get(name=category).products.only('id'))
 
         if 'clrs' in request.GET:
             colors = json.loads(request.GET['clrs'])
@@ -86,8 +91,8 @@ def search(request):
 
     context = dict()
     context['can_search'] = True
-    context['categories'] = Category.objects.all().order_by('level')
-    context['manufacturers'] = Manufacturer.objects.all().order_by('name')
+    context['categories'] = Category.objects.only('name').order_by('level')
+    context['manufacturers'] = Manufacturer.objects.only('name').order_by('name')
     context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
     context['is_empty'] = not bool(queryset.count())
     context['skus'] = queryset
@@ -98,10 +103,11 @@ def search(request):
 @login_required
 def favourites(request):
     user_profile = UserProfile.objects.get(user__id=request.user.id)
+    sku_related_fields = ['product__name', 'product__manufacturer__name']
 
     context = dict()
     context['can_search'] = True
-    context['liked_skus'] = user_profile.favourites.all()
+    context['liked_skus'] = user_profile.favourites.select_related().only(*sku_related_fields)
     context['is_empty'] = not bool(context['liked_skus'].count())
 
     return render(request, 'products/favourites.html', context)
@@ -110,16 +116,14 @@ def favourites(request):
 @login_required
 def like_action(request):
     sku_id = int(request.GET['id'])
-    sku = SKU.objects.get(id=sku_id)
-
     user_profile = UserProfile.objects.get(user__id=request.user.id)
     action = request.GET['action']
 
     if action == 'lk':
-        user_profile.favourites.add(sku)
+        user_profile.favourites.add(sku_id)
         data = {'is_liked': True}
     else:
-        user_profile.favourites.remove(sku)
+        user_profile.favourites.remove(sku_id)
         data = {'is_liked': False}
 
     user_profile.save()
@@ -133,11 +137,13 @@ def like_action(request):
 def add_comment(request, sku_id):
     if request.POST and request.is_ajax():
         text = request.POST['content']
-        user_profile = UserProfile.objects.get(user__id=request.user.id)
+        user_profile = UserProfile.objects.only('id').get(user__id=request.user.id)
         sku = SKU.objects.get(id=sku_id)
 
         sku.comments.create(owner=user_profile, content=text)
 
-        data = {'comments': sku.comments.all().order_by('-time')}
+        comment_related_field = ['owner__user__username']
+        data = {'comments': sku.comments.select_related().only(*comment_related_field).order_by('-time')}
+
         html = render_to_string('products/includes/comments.html', data)
         return HttpResponse(html)
