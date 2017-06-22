@@ -215,9 +215,7 @@
 						<tr>
 						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Wifi</th>
 
-							<!-- glyphicon -->
-
-							{% if product.wifi %}
+							{% if product.has_wifi %}
 						  		<td>Yes</td>
 							{% else %}
 								<td>No</td>
@@ -228,9 +226,7 @@
 						<tr>
 						  	<th class="col-xs-6 col-sm-6 col-md-4 col-lg-4" scope="row">Bluetooth</th>
 
-							<!-- glyphicon -->
-
-							{% if product.bluetooth %}
+							{% if product.has_bluetooth %}
 						  		<td>Yes</td>
 							{% else %}
 								<td>No</td>

@@ -10,8 +10,6 @@ from re import sub
 import os
 import re
 
-# Create your models here.
-
 
 def get_upload_path(instance, filename):
     file_type = filename.split('.')[-1]
@@ -99,39 +97,6 @@ class Product(models.Model):
 
     has_bluetooth = models.BooleanField(default=False)
     has_wifi = models.BooleanField(default=False)
-
-    '''
-    +1. color
-    +2. body material
-    +3. os type
-    +4. creation year
-    +5. weight
-    +6. screen diagonal
-    +7. screen resolution
-    +8. pixels per inch
-    +9. camera
-    +10. CPU
-    +11. number of processor cores
-    +12. RAM
-    +13. memory
-    +14. battery type
-    +15. battery capacity
-    +16. connectors
-    +17. wifi
-    +18. bluetooth
-    '''
-
-    '''def get_categories_sep_by_level(self):
-        lists_dict = {}
-
-        for category in self.categories.all():
-            if category.level in lists_dict.keys():
-                lists_dict[category.level].append(category)
-            else:
-                lists_dict[category.level] = [category]
-
-        return lists_dict
-    '''
 
     def fullname(self):
         return '{} {}'.format(self.manufacturer.name, self.name)

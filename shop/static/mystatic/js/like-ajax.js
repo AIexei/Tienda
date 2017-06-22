@@ -13,8 +13,6 @@ $(document).ready(function() {
 
         params = {'id': id, 'action': $(this).attr('id')};
 
-        console.log(params);
-
         if (id != null) {
             $.ajax({
                 url: '/like/',

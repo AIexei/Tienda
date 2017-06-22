@@ -22,6 +22,7 @@ $(document).ready(function() {
             data: params,
 
             success: function(data) {
+                $('#comment-content').val('');
                 $('div#cmnts').html(data);
             },
 

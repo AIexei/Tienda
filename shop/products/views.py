@@ -2,22 +2,32 @@ from django.shortcuts import render, redirect, HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.template .context_processors import csrf
+from django.views.generic import ListView
 from ratelimit.decorators import ratelimit
-from ratelimit.utils import is_ratelimited
 from .models import *
 import json
 
 
-# Create your views here.
+class Index(ListView):
+    model = SKU
+    template_name = 'index.html'
+    context_object_name = 'skus'
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        context['nodes'] = Category.objects.all()
+        context['can_search'] = True
+        return context
 
 
-def index(request):
+'''def index(request):
     context = dict()
     context['skus'] = SKU.objects.all()
     context['nodes'] = Category.objects.all()
     context['can_search'] = True
 
     return render(request, 'index.html', context)
+'''
 
 
 def product(request, sku_id):
@@ -39,7 +49,7 @@ def product(request, sku_id):
     return render(request, 'product.html', context)
 
 
-@ratelimit(key='ip', rate='3/s', block=True)
+@ratelimit(key='ip', rate='10/s', block=True)
 def search(request):
     queryset = SKU.objects.all()
 
@@ -56,12 +66,21 @@ def search(request):
             manufacturers = json.loads(request.GET['manufs'])
             queryset = queryset.filter(product__manufacturer__name__in=manufacturers)
 
+        if 'has_wifi' in request.GET:
+            if request.GET['has_wifi']:
+                queryset = queryset.filter(product__has_wifi=True)
+
+        if 'has_bluetooth' in request.GET:
+            if request.GET['has_bluetooth']:
+                queryset = queryset.filter(product__has_bluetooth=True)
+
     except Exception:
         queryset = SKU.objects.none()
 
 
     if request.is_ajax():
-        html = render_to_string('includes/search-div.html', {'skus': queryset})
+        data = {'skus': queryset, 'is_empty': not bool(queryset.count())}
+        html = render_to_string('includes/search-div.html', data)
         return HttpResponse(html)
 
     context = dict()
@@ -69,6 +88,7 @@ def search(request):
     context['categories'] = Category.objects.all().order_by('level')
     context['manufacturers'] = Manufacturer.objects.all().order_by('name')
     context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
+    context['is_empty'] = not bool(queryset.count())
     context['skus'] = queryset
 
     return render(request, 'search.html', context)
@@ -108,7 +128,7 @@ def like_action(request):
 
 
 @login_required
-@ratelimit(key='user', rate='10/m', block=True)
+@ratelimit(key='user', rate='5/m', block=True)
 def add_comment(request, sku_id):
     if request.POST and request.is_ajax():
         text = request.POST['content']

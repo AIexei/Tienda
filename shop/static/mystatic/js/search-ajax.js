@@ -9,27 +9,22 @@ $(document).ready(function() {
         });
     }
 
+
     $('select#category').selectpicker('val', category);
     $('select#manufacturer').selectpicker('val', manufacturers);
     $('select#color').selectpicker('val', colors);
 
 
-    /*
-    $('input[type=checkbox]').on('change', function() {
-        var wifi = $('input#wifi').val();
-        var bluetooth = $('input#bluetooth').val();
-    });
-    */
-
-
-    $('select').on('change', function () {
+    $('.filter').on('change', function () {
         var category = $('select#category').val();
         var manufacturers = $('select#manufacturer').val();
         var colors = $('select#color').val();
+        var hasWifi = $('input#wifi').is(':checked');
+        var hasBluetooth = $('input#bluetooth').is(':checked');
 
-        var params = {}
+        var params = {};
 
-        if (category != null) {
+        if (Boolean(category)) {
             params['cat'] = category;
         }
 
@@ -40,6 +35,14 @@ $(document).ready(function() {
 
         if (manufacturers != null) {
             params['manufs'] = JSON.stringify(manufacturers);
+        }
+
+        if (hasBluetooth) {
+            params['has_bluetooth'] = true;
+        }
+
+        if (hasWifi) {
+            params['has_wifi'] = true;
         }
 
         $.ajax({
