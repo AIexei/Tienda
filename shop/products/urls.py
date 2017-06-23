@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^product/id(?P<sku_id>\d+)/$', ProductView.as_view(), name='product'),
     url(r'^favourites/$', FavouritesView.as_view(), name='favourites'),
     url(r'^search/', SearchView.as_view(), name='search'),
-    url(r'^like/', like_action, name='like_action'),
-    url(r'^add_comment/(?P<sku_id>\d+)/$', add_comment, name='add_comment'),
+    url(r'^like/', LikeUpdate.as_view(), name='like_action'),
+    url(r'^add_comment/(?P<sku_id>\d+)/$', CommentCreate.as_view(), name='add_comment'),
 
 ]

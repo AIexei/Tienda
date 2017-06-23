@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.template .context_processors import csrf
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from ratelimit.decorators import ratelimit
 from .models import *
 import json
@@ -28,7 +29,7 @@ class IndexView(ListView):
         return queryset
 
 
-class FavouritesView(ListView):
+class FavouritesView(LoginRequiredMixin, ListView):
     model = SKU
     context_object_name = 'liked_skus'
     template_name = 'products/favourites.html'
@@ -47,11 +48,6 @@ class FavouritesView(ListView):
         only_fields = ['product__name', 'product__manufacturer__name']
         queryset = user_profile.favourites.select_related().only(*only_fields)
         return queryset
-
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(FavouritesView, self).dispatch(request, *args, **kwargs)
 
 
 class SearchView(ListView):
@@ -157,38 +153,79 @@ class ProductView(DetailView):
             return False
 
 
-
-@login_required
-def like_action(request):
-    sku_id = int(request.GET['id'])
-    user_profile = UserProfile.objects.get(user__id=request.user.id)
-    action = request.GET['action']
-
-    if action == 'lk':
-        user_profile.favourites.add(sku_id)
-        data = {'is_liked': True}
-    else:
-        user_profile.favourites.remove(sku_id)
-        data = {'is_liked': False}
-
-    user_profile.save()
-    html = render_to_string('products/includes/btns.html', data)
-
-    return HttpResponse(html)
+class LikeUpdate(LoginRequiredMixin, UpdateView):
+    http_method_names = ['get']
+    template_name = 'products/includes/btns.html'
 
 
-@login_required
-@ratelimit(key='user', rate='5/m', block=True)
-def add_comment(request, sku_id):
-    if request.POST and request.is_ajax():
-        text = request.POST['content']
-        user_profile = UserProfile.objects.only('id').get(user__id=request.user.id)
-        sku = SKU.objects.get(id=sku_id)
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            sku_id  = int(request.GET['id'])
+            action = request.GET['action']
+            status = self.get_action_status(action, sku_id)
 
-        sku.comments.create(owner=user_profile, content=text)
+            html = render_to_string(self.template_name, {'is_liked': status})
+            return HttpResponse(html)
 
-        comment_related_field = ['owner__user__username']
-        data = {'comments': sku.comments.select_related().only(*comment_related_field).order_by('-time')}
+        raise Http404()
 
-        html = render_to_string('products/includes/comments.html', data)
-        return HttpResponse(html)
+
+    def get_action_status(self, action, sku_id):
+        user_profile = UserProfile.objects.get(user__id=self.request.user.id)
+        result = True
+
+        if action == 'lk':
+            user_profile.favourites.add(sku_id)
+        else:
+            user_profile.favourites.remove(sku_id)
+            result = False
+
+        user_profile.save()
+        return result
+
+
+class CommentCreate(LoginRequiredMixin, CreateView):
+    model = Comment
+    context_object_name = 'comments'
+    http_method_names = ['post']
+    template_name = 'products/includes/comments.html'
+    fields = ['content']
+
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            text = request.POST['content']
+            sku_id = int(self.kwargs['sku_id'])
+
+            self.create_comment(text, sku_id)
+
+            html = render_to_string(self.template_name, self.get_context_data())
+            return HttpResponse(html)
+
+        raise Http404()
+
+
+    def create_comment(self, text, sku_id):
+        user_profile = UserProfile.objects.only('id').get(user__id=self.request.user.id)
+        self.sku = SKU.objects.get(id=sku_id)
+        self.sku.comments.create(owner=user_profile, content=text)
+
+
+    def get_context_data(self, **kwargs):
+        context ={self.context_object_name: self.get_queryset()}
+        return context
+
+
+    def get_queryset(self):
+        only_fields = ['owner__user__username']
+        queryset = self.sku.comments.select_related().only(*only_fields).order_by('-time')
+        return queryset
+
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        raise Http404()
+
+
+    @method_decorator(ratelimit(key='user', rate='5/m', block=True))
+    def dispatch(self, request, *args, **kwargs):
+        return super(CommentCreate, self).dispatch(request, *args, **kwargs)
