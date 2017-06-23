@@ -18,8 +18,16 @@ def get_upload_path(instance, filename):
 
 
 def search_sku_by_regex(string):
-    products = list(Product.objects.all())
-    products = filter(lambda x: re.search(string, x.fullname(), re.IGNORECASE), products)
+    only_fields = ['name', 'manufacturer__name']
+    products = list(Product.objects.select_related().only(*only_fields))
+
+    strings = string.split(' ')
+    print(strings)
+
+    for s in strings:
+        products = list(filter(lambda x: re.search(s, x.manufacturer.name + ' ' + x.name, re.IGNORECASE), products))
+
+
     skus = SKU.objects.filter(product__in=products)
     return skus
 

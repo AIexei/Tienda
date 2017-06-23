@@ -125,7 +125,7 @@ class ProductView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductView, self).get_context_data(**kwargs)
-        context['can_search'] = True
+        context['can_search'] = False
         context['product'] = self.object.product
         context['comments'] = self.object.comments.select_related().only('owner__user__username').order_by('-time')
         context['is_liked'] = self.is_liked_product()
@@ -182,6 +182,10 @@ class LikeUpdate(LoginRequiredMixin, UpdateView):
 
         user_profile.save()
         return result
+
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        raise Http404()
 
 
 class CommentCreate(LoginRequiredMixin, CreateView):

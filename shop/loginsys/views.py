@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-
+from django.views.generic import RedirectView
 # Create your views here.
 
 
