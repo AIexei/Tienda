@@ -1,13 +1,13 @@
 from django.conf.urls import url
-from . import views
+from .views import *
 
 
 urlpatterns = [
-    url(r'^$', views.index , name='index'),
-    url(r'^product/id(?P<sku_id>\d+)/$', views.product, name='product'),
-    url(r'^favourites/$', views.favourites, name='favourites'),
-    url(r'^search/', views.search, name='search'),
-    url(r'^like/', views.like_action, name='like_action'),
-    url(r'^add_comment/(?P<sku_id>\d+)/$', views.add_comment, name='add_comment'),
+    url(r'^$', IndexView.as_view() , name='index'),
+    url(r'^product/id(?P<sku_id>\d+)/$', ProductView.as_view(), name='product'),
+    url(r'^favourites/$', FavouritesView.as_view(), name='favourites'),
+    url(r'^search/', SearchView.as_view(), name='search'),
+    url(r'^like/', like_action, name='like_action'),
+    url(r'^add_comment/(?P<sku_id>\d+)/$', add_comment, name='add_comment'),
 
 ]

@@ -1,116 +1,161 @@
 from django.shortcuts import render, redirect, HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.template .context_processors import csrf
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from ratelimit.decorators import ratelimit
 from .models import *
 import json
 
-'''
-class Index(ListView):
+
+class IndexView(ListView):
     model = SKU
-    template_name = 'index.html'
     context_object_name = 'skus'
+    template_name = 'products/index.html'
+
 
     def get_context_data(self, **kwargs):
-        context = super(Index, self).get_context_data(**kwargs)
+        context = super(IndexView, self).get_context_data(**kwargs)
         context['nodes'] = Category.objects.all()
         context['can_search'] = True
         return context
-'''
 
 
-def index(request):
-    context = dict()
-
-    sku_related_field = ['product__name', 'product__manufacturer__name']
-    context['skus'] = SKU.objects.select_related().only(*sku_related_field)
-    context['nodes'] = Category.objects.all()
-    context['can_search'] = True
-
-    return render(request, 'products/index.html', context)
+    def get_queryset(self):
+        only_fields = ['product__name', 'product__manufacturer__name']
+        queryset = self.model.objects.select_related().only(*only_fields)
+        return queryset
 
 
-def product(request, sku_id):
-    sku = SKU.objects.get(id=sku_id)
-
-    context = dict()
-    context.update(csrf(request))
-    context['sku'] = sku
-    context['product'] = sku.product
-    context['can_search'] = True
-
-    comment_related_field = ['owner__user__username']
-    context['comments'] = sku.comments.select_related().only(*comment_related_field).order_by('-time')
-
-    try:
-        user_profile = UserProfile.objects.get(user__id=request.user.id)
-        context['is_liked'] = bool(user_profile.favourites.filter(id=sku.id))
-    except Exception as e:
-        print(e)
-
-    return render(request, 'products/product.html', context)
+class FavouritesView(ListView):
+    model = SKU
+    context_object_name = 'liked_skus'
+    template_name = 'products/favourites.html'
 
 
-@ratelimit(key='ip', rate='5/s', block=True)
-def search(request):
-    sku_related_fields = ['product__name', 'product__manufacturer__name']
-    defer_fields = ['screen_diagonal', 'screen_resolution', 'body_maretial', 'weight', 'battery_capacity']
-    queryset = SKU.objects.defer(*defer_fields).select_related().only(*sku_related_fields)
-
-    try:
-        if 'cat' in request.GET:
-            category = request.GET['cat']
-            queryset = queryset.filter(product__in=Category.objects.get(name=category).products.only('id'))
-
-        if 'clrs' in request.GET:
-            colors = json.loads(request.GET['clrs'])
-            queryset = queryset.filter(color__in=colors)
-
-        if 'manufs' in request.GET:
-            manufacturers = json.loads(request.GET['manufs'])
-            queryset = queryset.filter(product__manufacturer__name__in=manufacturers)
-
-        if 'has_wifi' in request.GET:
-            if request.GET['has_wifi']:
-                queryset = queryset.filter(product__has_wifi=True)
-
-        if 'has_bluetooth' in request.GET:
-            if request.GET['has_bluetooth']:
-                queryset = queryset.filter(product__has_bluetooth=True)
-
-    except Exception:
-        queryset = SKU.objects.none()
+    def get_context_data(self, **kwargs):
+        context = super(FavouritesView, self).get_context_data(**kwargs)
+        context['can_search'] = True
+        context['is_empty'] = not bool(context[self.context_object_name].count())
+        return context
 
 
-    if request.is_ajax():
-        data = {'skus': queryset, 'is_empty': not bool(queryset.count())}
-        html = render_to_string('products/includes/search-div.html', data)
-        return HttpResponse(html)
+    def get_queryset(self):
+        user_profile = UserProfile.objects.get(user__id=self.request.user.id)
 
-    context = dict()
-    context['can_search'] = True
-    context['categories'] = Category.objects.only('name').order_by('level')
-    context['manufacturers'] = Manufacturer.objects.only('name').order_by('name')
-    context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
-    context['is_empty'] = not bool(queryset.count())
-    context['skus'] = queryset
-
-    return render(request, 'products/search.html', context)
+        only_fields = ['product__name', 'product__manufacturer__name']
+        queryset = user_profile.favourites.select_related().only(*only_fields)
+        return queryset
 
 
-@login_required
-def favourites(request):
-    user_profile = UserProfile.objects.get(user__id=request.user.id)
-    sku_related_fields = ['product__name', 'product__manufacturer__name']
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(FavouritesView, self).dispatch(request, *args, **kwargs)
 
-    context = dict()
-    context['can_search'] = True
-    context['liked_skus'] = user_profile.favourites.select_related().only(*sku_related_fields)
-    context['is_empty'] = not bool(context['liked_skus'].count())
 
-    return render(request, 'products/favourites.html', context)
+class SearchView(ListView):
+    model = SKU
+    context_object_name = 'skus'
+    template_name = 'products/search.html'
+
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            self.object_list = self.get_queryset()
+            context = self.get_context_data_for_ajax()
+            html = render_to_string('products/includes/search-div.html', context)
+            return HttpResponse(html)
+
+        return super(SearchView, self).get(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchView, self).get_context_data(**kwargs)
+        context['can_search'] = True
+        context['categories'] = Category.objects.only('name').order_by('level')
+        context['manufacturers'] = Manufacturer.objects.only('name').order_by('name')
+        context['is_empty'] = not bool(context[self.context_object_name].count())
+        context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
+        return context
+
+
+    def get_context_data_for_ajax(self, **kwargs):
+        context = super(SearchView, self).get_context_data(**kwargs)
+        context['is_empty'] = not bool(context[self.context_object_name].count())
+        return context
+
+
+    def get_queryset(self):
+        only_fields = ['product__name', 'product__manufacturer__name']
+        queryset = self.model.objects.select_related().only(*only_fields)
+
+        try:
+            if 'cat' in self.request.GET:
+                category = self.request.GET['cat']
+                queryset = queryset.filter(product__in=Category.objects.get(name=category).products.only('id'))
+
+            if 'clrs' in self.request.GET:
+                colors = json.loads(self.request.GET['clrs'])
+                queryset = queryset.filter(color__in=colors)
+
+            if 'manufs' in self.request.GET:
+                manufacturers = json.loads(self.request.GET['manufs'])
+                queryset = queryset.filter(product__manufacturer__name__in=manufacturers)
+
+            if 'has_wifi' in self.request.GET:
+                if self.request.GET['has_wifi']:
+                    queryset = queryset.filter(product__has_wifi=True)
+
+            if 'has_bluetooth' in self.request.GET:
+                if self.request.GET['has_bluetooth']:
+                    queryset = queryset.filter(product__has_bluetooth=True)
+        except:
+            queryset = self.model.objects.none()
+
+        return queryset
+
+
+    @method_decorator(ratelimit(key='ip', rate='5/s', block=True))
+    def dispatch(self, request, *args, **kwargs):
+        return super(SearchView, self).dispatch(request, *args, **kwargs)
+
+
+class ProductView(DetailView):
+    model = SKU
+    context_object_name = 'sku'
+    template_name = 'products/product.html'
+
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductView, self).get_context_data(**kwargs)
+        context['can_search'] = True
+        context['product'] = self.object.product
+        context['comments'] = self.object.comments.select_related().only('owner__user__username').order_by('-time')
+        context['is_liked'] = self.is_liked_product()
+        return context
+
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        try:
+            sku_id = self.kwargs['sku_id']
+            obj = queryset.get(id=sku_id)
+        except:
+            raise Http404()
+
+        return obj
+
+
+    def is_liked_product(self):
+        try:
+            user_profile = UserProfile.objects.get(user__id=self.request.user.id)
+            return bool(user_profile.favourites.filter(id=self.kwargs['sku_id']))
+        except:
+            return False
+
 
 
 @login_required
