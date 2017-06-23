@@ -114,7 +114,7 @@ class Product(models.Model):
 
 
 @receiver(m2m_changed, sender=Product.categories.through)
-def update_categories(sender, instance, **kwargs):
+def update_product_categories(sender, instance, **kwargs):
     action = kwargs.pop('action', None)
 
     if action == 'post_add' or action == 'post_remove':
