@@ -13,11 +13,11 @@
 
 {% block navbar-lis %}
 	{% if user.is_authenticated %}
-		<li class="active"><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+		<li><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
 		<li><a href="{% url 'favourites' %}">Liked</a></li>
 		<li id="last-li"><a href="{% url 'logout' %}">Logout</a></li>
 	{% else %}
-		<li class="active"><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
+		<li><a href="{% url 'index' %}">Home<span class="sr-only">(current)</span></a></li>
 		<li><a href="{% url 'login' %}">Login</a></li>
 		<li id="last-li"><a href="{% url 'register' %}">Register</a></li>
 	{% endif %}

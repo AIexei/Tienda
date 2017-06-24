@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('get_nick', 'get_name', 'get_email', 'phone')
+    list_display = ('get_nick', 'get_name', 'get_email')
     filter_horizontal = ('favourites',)
     search_fields = ('name',)
 

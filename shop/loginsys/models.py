@@ -9,7 +9,6 @@ class UserProfile(models.Model):
         verbose_name_plural = 'User profiles'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=50)
     favourites = models.ManyToManyField(SKU, related_name='amateurs', blank=True)
 
     def __str__(self):

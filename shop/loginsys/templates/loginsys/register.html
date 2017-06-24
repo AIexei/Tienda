@@ -19,13 +19,28 @@
 
 {% block body %}
 	<div class="container">
-		<form class="form-signin" role="form">
+		<form class="form-signin" role="form" method="post" action="{% url 'register' %}">
+			{% csrf_token %}
+
 			<h3 class="form-signin-heading text-center font-big">Register in Tienda</h3>
-			<input type="email" class="form-control font-mid" placeholder="Email address" required autofocus>
-			<input type="text" class="form-control font-mid input-mid" placeholder="Your name" required>
-			<input type="tel" class="form-control font-mid input-mid" placeholder="Phone number" required>
-			<input type="password" class="form-control font-mid input-mid" placeholder="Password" required>
-			<input type="password" class="form-control font-mid input-last" placeholder="Confirm password" required>
+
+			{% for field in register_form %}
+				{{ field }}
+			{% endfor %}
+
+			<!--
+			<input name="email" type="email" class="form-control font-mid" placeholder="Email address" required autofocus>
+			<input name="name" type="text" class="form-control font-mid input-mid" placeholder="Your name" required>
+			<input name="pass1" type="password" class="form-control font-mid input-mid" placeholder="Password" required>
+			<input name="pass2" type="password" class="form-control font-mid input-last" placeholder="Confirm password" required>
+			-->
+
+			{% if message %}
+				<center>
+					<p class="font-small">{{ message }}</p>
+				</center>
+			{% endif %}
+
 			<button class="btn btn-lg btn-primary btn-block font-mid" type="submit">Register</button>
 		</form>
 	</div>

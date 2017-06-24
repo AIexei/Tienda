@@ -19,10 +19,19 @@
 
 {% block body %}
 	<div class="container">
-		<form class="form-signin" role="form">
+		<form class="form-signin" method="post" action="{% url 'login' %}" role="form">
+			{% csrf_token %}
+
 			<h3 class="form-signin-heading text-center font-big">Login to Tienda</h3>
-			<input type="email" class="form-control font-mid" placeholder="Email address" required autofocus>
-			<input type="password" class="form-control font-mid input-last" placeholder="Password" required>
+			<input name="email" type="email" class="form-control font-mid" placeholder="Email address" required autofocus>
+			<input name="password" type="password" class="form-control font-mid input-last" placeholder="Password" required>
+
+			{% if message %}
+				<center>
+					<p class="font-mid message">{{ message }}</p>
+				</center>
+			{% endif %}
+
 			<button class="btn btn-lg btn-primary btn-block font-mid" type="submit">Sign in</button>
 		</form>
 	</div>
