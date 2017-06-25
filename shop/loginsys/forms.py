@@ -25,7 +25,7 @@ class UserForm(ModelForm):
                     'autocomplete': 'off'
                 }), required=True)
 
-    confirm_password = CharField(widget=TextInput(attrs={
+    confirm_password = CharField(widget=PasswordInput(attrs={
                     'class': 'form-control font-mid input-last',
                     'placeholder': 'Confirm password',
                     'autocomplete': 'off'
