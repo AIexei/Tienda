@@ -27,7 +27,6 @@ def search_sku_by_regex(string):
     for s in strings:
         products = list(filter(lambda x: re.search(s, x.manufacturer.name + ' ' + x.name, re.IGNORECASE), products))
 
-
     skus = SKU.objects.filter(product__in=products)
     return skus
 
@@ -153,16 +152,15 @@ class SKU(models.Model):
 
     color = models.CharField(max_length=50, choices=COLOR_CHOICES)
     screen_diagonal = models.FloatField()
-    screen_resolution = models.CharField(max_length=50, null=True, blank=True)
+    screen_resolution = models.CharField(max_length=50, null=True, blank=True, help_text='Format: 640x480')
     body_material = models.CharField(max_length=50, choices=MATERIAL_CHOICES)
     weight = models.IntegerField(help_text='In grams')
     battery_capacity = models.IntegerField(default=None, null=True, blank=True, help_text='In Milliamp * hour')
 
     stock_id = models.CharField(max_length=50, unique=True)
-    product = models.ForeignKey(Product, related_name='SKUs')
+    product = models.ForeignKey(Product, related_name='skus')
     image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
 
-    # x = Product.objects.filter(Q(name__iregex=r'a') | Q(manufacturer__name__iregex=r'a'))
 
     def get_ppi(self):
         if self.screen_resolution:

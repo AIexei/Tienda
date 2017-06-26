@@ -70,7 +70,7 @@
 
 				<div class="row text-left">
 					<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 font-mid">
-						<p class="no-margin font-mid"><b id="owner">Manufacturer: </b>{{ product.manufacturer.name }}</p>
+						<p class="no-margin font-mid"><b id="owner">Manufacturer: </b><a href='/search/?manufs=["{{ product.manufacturer.name }}"]'>{{ product.manufacturer.name }}</a></p>
 						<p class="no-margin font-mid"><b id="phone">In store: </b>120</p>
 					</div>
 
@@ -235,9 +235,6 @@
 				  	</tbody>
 				</table>
 			</div>
-
-
-
 
 
 			<div id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

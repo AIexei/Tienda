@@ -1,7 +1,8 @@
 $(document).ready(function() {
+    var expr =
     var category = getParameterByName('cat');
     var manufacturers = JSON.parse(getParameterByName('manufs'));
-    var colors = JSON.parse(getParameterByName('clrs'))
+    var colors = JSON.parse(getParameterByName('clrs'));
 
     if (colors != null) {
         colors = colors.map(function(shortName) {
@@ -9,13 +10,12 @@ $(document).ready(function() {
         });
     }
 
-
     $('select#category').selectpicker('val', category);
     $('select#manufacturer').selectpicker('val', manufacturers);
     $('select#color').selectpicker('val', colors);
 
 
-    $('.filter').on('change', function () {
+    $('.filter').on('change', function (e) {
         var category = $('select#category').val();
         var manufacturers = $('select#manufacturer').val();
         var colors = $('select#color').val();
@@ -61,6 +61,8 @@ $(document).ready(function() {
         });
     });
 });
+
+
 
 
 function getParameterByName(name, url) {

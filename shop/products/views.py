@@ -58,6 +58,7 @@ class SearchView(ListView):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
+            print('ajax')
             self.object_list = self.get_queryset()
             context = self.get_context_data_for_ajax()
             html = render_to_string('products/includes/search-div.html', context)
@@ -106,6 +107,19 @@ class SearchView(ListView):
             if 'has_bluetooth' in self.request.GET:
                 if self.request.GET['has_bluetooth']:
                     queryset = queryset.filter(product__has_bluetooth=True)
+
+            if 'expr' in self.request.GET:
+                string = self.request.GET['expr']
+                strings = string.split(' ')
+
+                skus = list(queryset)
+
+                for s in strings:
+                    skus = list(filter(lambda x: re.search(s, x.product.manufacturer.name +
+                                                           ' ' + x.product.name, re.IGNORECASE), skus))
+
+                ids = map(lambda x: x.id, skus)
+                queryset = SKU.objects.filter(id__in=ids)
         except:
             queryset = self.model.objects.none()
 
