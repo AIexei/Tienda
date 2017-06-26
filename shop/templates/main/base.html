@@ -30,10 +30,10 @@
 					<a class="navbar-brand" id="mybrand" href="{% url 'index' %}">Tienda</a>
 
 					{% if can_search %}
-						<form method="get" action="{% url 'search' %}" class="filter navbar-form navbar-left hidden-xs">
-						  	<div class="input-group">
+						<form method="get" action="{% url 'search' %}" class="strfilter navbar-form navbar-left hidden-xs">
+						  	<div class="input-group has-clear">
 
-								<input name="expr" required type="text" class="form-control" placeholder="Search by products">
+								<input name="expr" required class="form-control" type="search" placeholder="Search by products">
 
 								<div class="input-group-btn">
 									<button class="btn btn-default" type="submit">

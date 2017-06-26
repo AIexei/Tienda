@@ -40,10 +40,10 @@ class CommentAdmin(admin.ModelAdmin):
 
 class SKUAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'color', 'body_material', 'screen_diagonal',
-                    'screen_resolution', 'get_ppi', 'weight', 'battery_capacity',)
+                    'screen_resolution', 'get_ppi', 'weight', 'battery_capacity', 'likes')
 
     ordering = ('stock_id',)
-    exclude = ('stock_id',)
+    exclude = ('stock_id', 'likes')
     actions = ['delete_selected',]
 
     def delete_selected(self, request, queryset):

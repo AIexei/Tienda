@@ -14,6 +14,7 @@ class IndexView(ListView):
     model = SKU
     context_object_name = 'skus'
     template_name = 'products/index.html'
+    paginate_by = 12
 
 
     def get_context_data(self, **kwargs):
@@ -25,7 +26,7 @@ class IndexView(ListView):
 
     def get_queryset(self):
         only_fields = ['product__name', 'product__manufacturer__name']
-        queryset = self.model.objects.select_related().only(*only_fields)
+        queryset = self.model.objects.select_related().only(*only_fields).order_by('-likes')
         return queryset
 
 
@@ -58,7 +59,6 @@ class SearchView(ListView):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            print('ajax')
             self.object_list = self.get_queryset()
             context = self.get_context_data_for_ajax()
             html = render_to_string('products/includes/search-div.html', context)
@@ -74,12 +74,14 @@ class SearchView(ListView):
         context['manufacturers'] = Manufacturer.objects.only('name').order_by('name')
         context['is_empty'] = not bool(context[self.context_object_name].count())
         context['colors'] = sorted([x[1] for x in SKU.COLOR_CHOICES])
+        context['expr'] = self.get_expr()
         return context
 
 
     def get_context_data_for_ajax(self, **kwargs):
         context = super(SearchView, self).get_context_data(**kwargs)
         context['is_empty'] = not bool(context[self.context_object_name].count())
+        context['expr'] = self.get_expr()
         return context
 
 
@@ -109,7 +111,7 @@ class SearchView(ListView):
                     queryset = queryset.filter(product__has_bluetooth=True)
 
             if 'expr' in self.request.GET:
-                string = self.request.GET['expr']
+                string = self.get_expr()
                 strings = string.split(' ')
 
                 skus = list(queryset)
@@ -124,6 +126,10 @@ class SearchView(ListView):
             queryset = self.model.objects.none()
 
         return queryset
+
+
+    def get_expr(self):
+        return self.request.GET.get('expr', None)
 
 
     @method_decorator(ratelimit(key='ip', rate='5/s', block=True))
@@ -186,14 +192,18 @@ class LikeUpdate(LoginRequiredMixin, UpdateView):
 
     def get_action_status(self, action, sku_id):
         user_profile = UserProfile.objects.get(user__id=self.request.user.id)
+        sku = SKU.objects.get(id=sku_id)
         result = True
 
         if action == 'lk':
+            sku.likes = sku.likes + 1
             user_profile.favourites.add(sku_id)
         else:
+            sku.likes = sku.likes - 1
             user_profile.favourites.remove(sku_id)
             result = False
 
+        sku.save()
         user_profile.save()
         return result
 

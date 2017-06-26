@@ -157,6 +157,7 @@ class SKU(models.Model):
     weight = models.IntegerField(help_text='In grams')
     battery_capacity = models.IntegerField(default=None, null=True, blank=True, help_text='In Milliamp * hour')
 
+    likes = models.IntegerField(default=0)
     stock_id = models.CharField(max_length=50, unique=True)
     product = models.ForeignKey(Product, related_name='skus')
     image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
