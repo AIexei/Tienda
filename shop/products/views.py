@@ -34,6 +34,7 @@ class FavouritesView(LoginRequiredMixin, ListView):
     model = SKU
     context_object_name = 'liked_skus'
     template_name = 'products/favourites.html'
+    paginate_by = 18
 
 
     def get_context_data(self, **kwargs):
@@ -55,6 +56,7 @@ class SearchView(ListView):
     model = SKU
     context_object_name = 'skus'
     template_name = 'products/search.html'
+    paginate_by = 2
 
 
     def get(self, request, *args, **kwargs):
