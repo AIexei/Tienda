@@ -148,6 +148,10 @@
     color: red !important;
 }
 
+ul.pagination {
+    margin: 0 !important;
+}
+
 div.dropdown-menu.open {
 	border: 1px solid #ddd;
 	border-radius: 5px;

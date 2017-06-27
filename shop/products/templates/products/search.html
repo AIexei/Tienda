@@ -95,54 +95,52 @@
 
 		<div id="ajax-div" class="col-xs-12 col-sm-8 col-md-8 col-lg9">
 			{% include 'products/includes/search-div.html' %}
+
+			{% if is_paginated %}
+				<center>
+					<nav aria-label="Page navigation">
+						<ul class="pagination">
+							<li class="page-item">
+								{% if page_obj.has_previous %}
+									<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+										<span class="sr-only">Previous</span>
+									</a>
+								{% else %}
+									<a class="disabled page-link" href="#" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+										<span class="sr-only">Previous</span>
+									</a>
+								{% endif %}
+							</li>
+
+							{% for i in paginator.page_range %}
+								{% if page_obj.number == i %}
+									<li class="active page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+								{% else %}
+									<li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+								{% endif %}
+							{% endfor %}
+
+
+							<li class="page-item">
+								{% if page_obj.has_next %}
+									<a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+										<span class="sr-only">Next</span>
+									</a>
+								{% else %}
+									<a class="disabled page-link" href="#" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+										<span class="sr-only">Next</span>
+									</a>
+								{% endif %}
+							</li>
+						</ul>
+					</nav>
+				</center>
+			{% endif %}
 		</div>
-
-		<!--
-		{% if is_paginated %}
-			<center>
-				<nav aria-label="Page navigation">
-					<ul class="pagination">
-						<li class="page-item">
-							{% if page_obj.has_previous %}
-								<a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-									<span aria-hidden="true">&laquo;</span>
-									<span class="sr-only">Previous</span>
-								</a>
-							{% else %}
-								<a class="disabled page-link" href="#" aria-label="Previous">
-									<span aria-hidden="true">&laquo;</span>
-									<span class="sr-only">Previous</span>
-								</a>
-							{% endif %}
-						</li>
-
-						{% for i in paginator.page_range %}
-							{% if page_obj.number == i %}
-								<li class="active page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-							{% else %}
-								<li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-							{% endif %}
-						{% endfor %}
-
-
-						<li class="page-item">
-							{% if page_obj.has_next %}
-								<a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-									<span class="sr-only">Next</span>
-								</a>
-							{% else %}
-								<a class="disabled page-link" href="#" aria-label="Next">
-									<span aria-hidden="true">&raquo;</span>
-									<span class="sr-only">Next</span>
-								</a>
-							{% endif %}
-						</li>
-					</ul>
-				</nav>
-			</center>
-		{% endif %}
-		-->
 	</div>
 
 {% endblock %}

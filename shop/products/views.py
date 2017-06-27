@@ -14,7 +14,7 @@ class IndexView(ListView):
     model = SKU
     context_object_name = 'skus'
     template_name = 'products/index.html'
-    paginate_by = 12
+    paginate_by = 8
 
 
     def get_context_data(self, **kwargs):
@@ -34,7 +34,7 @@ class FavouritesView(LoginRequiredMixin, ListView):
     model = SKU
     context_object_name = 'liked_skus'
     template_name = 'products/favourites.html'
-    paginate_by = 18
+    paginate_by = 12
 
 
     def get_context_data(self, **kwargs):
@@ -56,8 +56,6 @@ class SearchView(ListView):
     model = SKU
     context_object_name = 'skus'
     template_name = 'products/search.html'
-    paginate_by = 2
-
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -127,7 +125,7 @@ class SearchView(ListView):
         except:
             queryset = self.model.objects.none()
 
-        return queryset
+        return queryset.order_by('likes')
 
 
     def get_expr(self):
