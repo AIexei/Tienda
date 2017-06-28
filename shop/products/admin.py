@@ -38,13 +38,19 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('content', 'owner', 'sku', 'time',)
 
 
+class BatchInline(admin.StackedInline):
+    model = Batch
+    extra = 1
+
+
 class SKUAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'color', 'body_material', 'screen_diagonal',
                     'screen_resolution', 'get_ppi', 'weight', 'battery_capacity', 'likes')
 
     ordering = ('stock_id',)
-    exclude = ('stock_id', 'likes')
+    exclude = ('stock_id', 'likes',)
     actions = ['delete_selected',]
+    inlines = [BatchInline,]
 
     def delete_selected(self, request, queryset):
         for obj in queryset:
