@@ -40,17 +40,21 @@ class CommentAdmin(admin.ModelAdmin):
 
 class BatchInline(admin.StackedInline):
     model = Batch
-    extra = 1
 
 
 class SKUAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'color', 'body_material', 'screen_diagonal',
+    list_display = ('get_fullname', 'color', 'body_material', 'screen_diagonal',
                     'screen_resolution', 'get_ppi', 'weight', 'battery_capacity', 'likes')
 
     ordering = ('stock_id',)
     exclude = ('stock_id', 'likes',)
+    search_fields = ('stock_id', 'product__manufacturer__name',)
     actions = ['delete_selected',]
     inlines = [BatchInline,]
+
+
+    def get_fullname(self, obj):
+        return ' '.join((obj.product.manufacturer.name, str(obj)))
 
     def delete_selected(self, request, queryset):
         for obj in queryset:
@@ -58,6 +62,8 @@ class SKUAdmin(admin.ModelAdmin):
 
         return django_delete_selected(self, request, queryset)
 
+
+    get_fullname.short_description = 'SKU'
     delete_selected.short_description = django_delete_selected.short_description
 
 
@@ -66,3 +72,6 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(SKU, SKUAdmin)
+
+
+admin.site.register(Batch)

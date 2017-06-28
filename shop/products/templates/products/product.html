@@ -37,9 +37,11 @@
 	                        	<h3 id="product-name" class="font-big"><b>{{ product.manufacturer }} {{ product.name }}</b></h3>
 	                        </div>
 
-	                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
-					 			<h3 id="product-cost" class="font-big"><b>$24.99</b></h3>
-					 		</div>
+							{% if batch %}
+								<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
+									<h3 id="product-cost" class="font-big"><b>${{ batch.cost }}</b></h3>
+								</div>
+							{% endif %}
                         </div>
 
                         <center>
@@ -71,7 +73,12 @@
 				<div class="row text-left">
 					<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 font-mid">
 						<p class="no-margin font-mid"><b id="owner">Manufacturer: </b><a href='/search/?manufs=["{{ product.manufacturer.name }}"]'>{{ product.manufacturer.name }}</a></p>
-						<p class="no-margin font-mid"><b id="phone">In store: </b>120</p>
+
+						{% if batch %}
+							<p class="no-margin font-mid"><b id="phone">In store: </b>{{ batch.count }}</p>
+						{% else %}
+							<p class="no-margin font-mid"><b id="phone">In store: </b>-</p>
+						{% endif %}
 					</div>
 
 

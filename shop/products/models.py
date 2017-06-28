@@ -162,6 +162,14 @@ class SKU(models.Model):
     product = models.ForeignKey(Product, related_name='skus')
     image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
 
+
+    def get_batch_status(self):
+        try:
+            x = self.batch
+            return 1
+        except:
+            return 0
+
     def get_ppi(self):
         if self.screen_resolution:
             w, h = map(int, self.screen_resolution.split('x'))
@@ -191,7 +199,7 @@ class Batch(models.Model):
     cost = models.FloatField()
     count = models.IntegerField()
     time = models.DateTimeField(auto_now_add=True)
-    sku = models.ForeignKey(SKU, related_name='batches')
+    sku = models.OneToOneField(SKU, related_name='batch')
 
 
 from loginsys.models import UserProfile
