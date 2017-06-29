@@ -38,10 +38,6 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('content', 'owner', 'sku', 'time',)
 
 
-class BatchInline(admin.StackedInline):
-    model = Batch
-
-
 class SKUAdmin(admin.ModelAdmin):
     list_display = ('get_fullname', 'color', 'body_material', 'screen_diagonal',
                     'screen_resolution', 'get_ppi', 'weight', 'battery_capacity', 'likes')
@@ -50,7 +46,6 @@ class SKUAdmin(admin.ModelAdmin):
     exclude = ('stock_id', 'likes',)
     search_fields = ('stock_id', 'product__manufacturer__name',)
     actions = ['delete_selected',]
-    inlines = [BatchInline,]
 
 
     def get_fullname(self, obj):
@@ -72,6 +67,3 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(SKU, SKUAdmin)
-
-
-admin.site.register(Batch)

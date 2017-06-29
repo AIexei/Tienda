@@ -123,6 +123,17 @@ def update_product_categories(sender, instance, **kwargs):
                     instance.categories.add(ancestor)
 
 
+class Batch(models.Model):
+    class Meta:
+        verbose_name_plural = 'Batches'
+
+    cost = models.IntegerField()
+    count = models.IntegerField()
+
+    def __str__(self):
+        return '{}$ - {}'.format(self.cost, self.count)
+
+
 # noinspection PyTypeChecker
 class SKU(models.Model):
     class Meta:
@@ -161,7 +172,7 @@ class SKU(models.Model):
     stock_id = models.CharField(max_length=50, unique=True)
     product = models.ForeignKey(Product, related_name='skus')
     image = models.ImageField(storage=OverwriteStorage(), upload_to=get_upload_path)
-
+    batch = models.OneToOneField(Batch, related_name='sku')
 
     def get_batch_status(self):
         try:
@@ -190,16 +201,6 @@ class SKU(models.Model):
 
     def __str__(self):
         return self.stock_id
-
-
-class Batch(models.Model):
-    class Meta:
-        verbose_name_plural = 'Batches'
-
-    cost = models.FloatField()
-    count = models.IntegerField()
-    time = models.DateTimeField(auto_now_add=True)
-    sku = models.OneToOneField(SKU, related_name='batch')
 
 
 from loginsys.models import UserProfile

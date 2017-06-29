@@ -62,7 +62,6 @@ class RegisterView(FormView):
         return super(RegisterView, self).dispatch(request, *args, **kwargs)
 
 
-
 class LoginView(View):
     success_url = '/'
     url = '/auth/login/'
@@ -96,7 +95,6 @@ class LoginView(View):
             return redirect(self.success_url)
 
         return super(LoginView, self).dispatch(request, *args, **kwargs)
-
 
 
 class LogoutView(RedirectView):

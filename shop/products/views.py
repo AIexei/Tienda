@@ -26,7 +26,7 @@ class IndexView(ListView):
 
     def get_queryset(self):
         only_fields = ['product__name', 'product__manufacturer__name', 'batch',]
-        queryset = self.model.objects.select_related().only(*only_fields).order_by('-likes')
+        queryset = self.model.objects.select_related().only(*only_fields).order_by('-batch__count', '-likes')
         return queryset
 
 
@@ -125,7 +125,7 @@ class SearchView(ListView):
         except:
             queryset = self.model.objects.none()
 
-        return queryset.order_by('likes')
+        return queryset.order_by('-batch__count', '-likes')
 
 
     def get_expr(self):
@@ -149,12 +149,7 @@ class ProductView(DetailView):
         context['product'] = self.object.product
         context['comments'] = self.object.comments.select_related().only('owner__user__username').order_by('-time')
         context['is_liked'] = self.is_liked_product()
-
-        try:
-            context['batch'] = self.object.batch
-        except:
-            context['batch'] = None
-
+        context['batch'] = self.object.batch
         return context
 
 
