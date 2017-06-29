@@ -148,6 +148,10 @@
     color: red !important;
 }
 
+.product-cost {
+	color: #337ab7;
+}
+
 ul.pagination {
     margin: 0 !important;
 }
@@ -171,10 +175,6 @@ div.dropdown-menu.open {
 #product-div {
 	margin-top: 10px;
 	margin-bottom: 65px;
-}
-
-#product-cost {
-	color: #337ab7;
 }
 
 #product-categories-div {

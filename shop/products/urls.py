@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^search/', SearchView.as_view(), name='search'),
     url(r'^like/', LikeUpdate.as_view(), name='like_action'),
     url(r'^add_comment/(?P<sku_id>\d+)/$', CommentCreate.as_view(), name='add_comment'),
-
+    url(r'^buy/id(?P<sku_id>\d+)/c(?P<cost>\d+)/$', Payment.as_view(), name='buy'),
 ]

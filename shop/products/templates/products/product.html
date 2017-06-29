@@ -38,7 +38,7 @@
 	                        </div>
 
 							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
-								<h3 id="product-cost" class="font-big"><b>${{ batch.cost }}</b></h3>
+								<h3 class="font-big product-cost"><b>${{ batch.cost }}</b></h3>
 							</div>
                         </div>
 
@@ -83,7 +83,8 @@
 					<div id="product-buttons" class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
                         {% if user.is_authenticated %}
 							<div id="btns">
-								{% include 'products/includes/btns.html' %}
+								{% include 'products/includes/like-btn.html' %}
+								{% include 'products/includes/buy-btn.html' %}
 							</div>
 						{% endif %}
 					</div>
@@ -272,6 +273,7 @@
 
 
 {% block scripts %}
+	<script src="{% static 'products/js/payment.js' %}"></script>
 	<script src="{% static 'products/js/like-ajax.js' %}"></script>
 	<script src="{% static 'products/js/comment-ajax.js' %}"></script>
 {% endblock %}

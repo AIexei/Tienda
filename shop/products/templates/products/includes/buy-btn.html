@@ -1,0 +1,35 @@
+{% if batch.count %}
+    <button type="button" class="btn btn-info font-mid actionbutton" data-toggle="modal" data-target="#myModal">Buy</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                    <h4 class="modal-title text-center font-mid" id="myModalLabel">
+                        <b>{{ product.manufacturer }} {{ product.name }}</b>
+                    </h4>
+
+                    <h4 class="text-center font-mid product-cost"><b>${{ batch.cost }}</b></h4>
+                </div>
+
+                <form id="buy">
+                    {% csrf_token%}
+
+                    <!-- UPDATE -->
+                    <div class="modal-body text-center">
+                        <input name="email" type="email" class="form-control font-mid" placeholder="Email address" required autofocus>
+                    </div>
+
+                    <div class="modal-footer">
+                        <center>
+                            <button type="submit" class="btn btn-primary btn-md">Pay</button>
+                        </center>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}

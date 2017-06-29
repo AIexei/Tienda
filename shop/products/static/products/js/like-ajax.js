@@ -20,7 +20,7 @@ $(document).ready(function() {
                 data: params,
 
                 success: function(data) {
-                    $('#btns').html(data);
+                    $('#like-btn').html(data);
                 },
 
                 failure: function() {

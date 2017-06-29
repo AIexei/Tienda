@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('#add-comment form').on('submit', function(e) {
+    $('form#buy').on('submit', function(e) {
         e.preventDefault();
 
         var path = window.location.pathname.split('/');
@@ -14,7 +14,8 @@ $(document).ready(function() {
         }
 
         var params = $(this).serialize();
-        var url = '/add_comment/' + id + '/';
+        var cost = $('h4.product-cost b').text();
+        var url = '/buy/id' + id + '/c' + cost.slice(1) + '/';
 
         $.ajax({
             type: 'POST',
@@ -22,11 +23,12 @@ $(document).ready(function() {
             data: params,
 
             success: function(data) {
-                $('#comment-content').val('');
-                $('div#cmnts').html(data);
+                $('#myModal').modal('hide');
+
             },
 
             failure: function() {
+                $('#myModal').modal('hide');
                 alert('Error');
             }
         });

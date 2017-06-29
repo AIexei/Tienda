@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.template .context_processors import csrf
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, View
 from ratelimit.decorators import ratelimit
 from .models import *
 import json
@@ -176,7 +176,7 @@ class ProductView(DetailView):
 
 class LikeUpdate(LoginRequiredMixin, UpdateView):
     http_method_names = ['get']
-    template_name = 'products/includes/btns.html'
+    template_name = 'products/includes/like-btn.html'
 
 
     def get(self, request, *args, **kwargs):
@@ -258,3 +258,24 @@ class CommentCreate(LoginRequiredMixin, CreateView):
     @method_decorator(ratelimit(key='user', rate='5/m', block=True))
     def dispatch(self, request, *args, **kwargs):
         return super(CommentCreate, self).dispatch(request, *args, **kwargs)
+
+
+class Payment(LoginRequiredMixin, View):
+    http_method_names = ['post',]
+
+
+    def post(self, request, *args, **kwargs):
+        sku_id = self.kwargs['sku_id']
+        prev_cost = int(self.kwargs['cost'])
+
+        sku = SKU.objects.get(id=sku_id)
+
+        print(sku.batch.count)
+        print(sku.batch.cost)
+
+        redirect_url = '/product/id' + sku_id
+        return redirect(redirect_url)
+
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        raise Http404()
