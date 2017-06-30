@@ -268,18 +268,19 @@ class CommentCreate(LoginRequiredMixin, CreateView):
 class Payment(LoginRequiredMixin, View):
     http_method_names = ['post',]
 
-
+    # UPDATE
     def post(self, request, *args, **kwargs):
         prev_cost = int(self.kwargs['cost'])
-
         sku_id = self.kwargs['sku_id']
         batch = SKU.objects.get(id=sku_id).batch
 
         if batch.count == 0:
-            pass
-
-        if prev_cost != batch.cost:
-            pass
+            print('no products')
+        elif prev_cost != batch.cost:
+            print('product cost changed')
+        else:
+            batch.count = batch.count - 1
+            batch.save()
 
         redirect_url = '/product/id' + sku_id
         return redirect(redirect_url)

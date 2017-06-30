@@ -62,9 +62,13 @@ class SKUAdmin(admin.ModelAdmin):
     delete_selected.short_description = django_delete_selected.short_description
 
 
+class BatchAdmin(admin.ModelAdmin):
+    actions = None
+
+
 admin.site.register(Manufacturer)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(SKU, SKUAdmin)
-admin.site.register(Batch)
+admin.site.register(Batch, BatchAdmin)

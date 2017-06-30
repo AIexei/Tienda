@@ -75,7 +75,7 @@ class Product(models.Model):
         ('winp', 'Windows phone'),
         ('blckb', 'Blackberry OS'),
         ('wtch', 'Watch OS')
-        #...
+        # ...
     )
 
     BATTERY_TYPE = (
@@ -84,7 +84,6 @@ class Product(models.Model):
         ('nicd', 'Ni-Cd'),
         ('nimh', 'Ni-MH'),
     )
-
 
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -134,7 +133,6 @@ class Batch(models.Model):
         return '{}$ - {}'.format(self.cost, self.count)
 
 
-# noinspection PyTypeChecker
 class SKU(models.Model):
     class Meta:
         verbose_name_plural = 'SKUs'
@@ -160,7 +158,6 @@ class SKU(models.Model):
         ('gl', 'Glass'),
     )
 
-
     color = models.CharField(max_length=50, choices=COLOR_CHOICES)
     screen_diagonal = models.FloatField()
     screen_resolution = models.CharField(max_length=50, null=True, blank=True, help_text='Format: 640x480')
@@ -184,15 +181,15 @@ class SKU(models.Model):
     def get_ppi(self):
         if self.screen_resolution:
             w, h = map(int, self.screen_resolution.split('x'))
-            diagonal_in_px = (w**2 + h**2)**0.5
+            diagonal_in_px = (w ** 2 + h ** 2) ** 0.5
             return int(diagonal_in_px / self.screen_diagonal)
 
         return None
 
     def save(self, *args, **kwargs):
         self.stock_id = '{}  {}{}{}{}{}'.format(self.product.name, self.color, self.body_material,
-                                                  str(self.screen_diagonal), self.screen_resolution,
-                                                  str(self.weight))
+                                                str(self.screen_diagonal), self.screen_resolution,
+                                                str(self.weight))
         super(SKU, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

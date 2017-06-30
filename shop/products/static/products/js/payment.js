@@ -23,8 +23,8 @@ $(document).ready(function() {
             data: params,
 
             success: function(data) {
-                $('#myModal').modal('hide');
-                alert(data);
+                location.reload();
+                bootbox.alert('hello');
             },
 
             failure: function() {
