@@ -24,7 +24,7 @@ $(document).ready(function() {
 
             success: function(data) {
                 $('#myModal').modal('hide');
-
+                alert(data);
             },
 
             failure: function() {

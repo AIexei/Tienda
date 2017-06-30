@@ -3,3 +3,10 @@
 {% else %}
     <button id="dslk" type="button" class="like btn btn-danger font-mid actionbutton">Dislike</button>
 {% endif %}
+
+
+{% if batch.count %}
+    <button type="button" class="btn btn-info font-mid actionbutton" data-toggle="modal" data-target="#myModal">Buy</button>
+
+    {% include 'products/includes/payment.html' %}
+{% endif %}

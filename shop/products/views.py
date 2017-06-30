@@ -176,16 +176,21 @@ class ProductView(DetailView):
 
 class LikeUpdate(LoginRequiredMixin, UpdateView):
     http_method_names = ['get']
-    template_name = 'products/includes/like-btn.html'
+    template_name = 'products/includes/btns.html'
 
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            sku_id  = int(request.GET['id'])
+            sku_id = int(request.GET['id'])
+            sku = SKU.objects.get(id=sku_id)
+
             action = request.GET['action']
             status = self.get_action_status(action, sku_id)
+            batch = sku.batch
+            product = sku.product
 
-            html = render_to_string(self.template_name, {'is_liked': status})
+            context = {'is_liked': status, 'batch': batch, 'product': product}
+            html = render_to_string(self.template_name, context)
             return HttpResponse(html)
 
         raise Http404()
@@ -265,13 +270,16 @@ class Payment(LoginRequiredMixin, View):
 
 
     def post(self, request, *args, **kwargs):
-        sku_id = self.kwargs['sku_id']
         prev_cost = int(self.kwargs['cost'])
 
-        sku = SKU.objects.get(id=sku_id)
+        sku_id = self.kwargs['sku_id']
+        batch = SKU.objects.get(id=sku_id).batch
 
-        print(sku.batch.count)
-        print(sku.batch.cost)
+        if batch.count == 0:
+            pass
+
+        if prev_cost != batch.cost:
+            pass
 
         redirect_url = '/product/id' + sku_id
         return redirect(redirect_url)
