@@ -12,7 +12,7 @@ Make virtualenv (with Python3+):
  * `pip install psycopg2==2.7.1 (for PostgreSQL db)`
  
 Clone project:
- * `git clone https://alexei.evlanov@gitlab.itechart-group.com/d2.st.shop/shop.git`
+ * `git clone`
  * `configure your database (watch .../shop/shop/settings.py DATABASES)`
  * `python manage.py makemigrations`
  * `python manage.py migrate`
